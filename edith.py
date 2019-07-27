@@ -4,7 +4,7 @@ import time
 from io import BytesIO
 
 nicks = {}
-granted = ["James_Bond", "Vittore_Deltoro", "James_Bond665", "Mauricio_Cedra"]
+granted = ["James_Bond", "Vittore_Deltoro", "James_Bond665", "Mauricio_Cedra", "Fernando_Guardado"]
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -42,5 +42,5 @@ def dict_to_binary(the_dict):
     binary = ' '.join(format(ord(letter), 'b') for letter in str)
     return binary
 
-httpd = HTTPServer(('localhost', 1488), SimpleHTTPRequestHandler)
+httpd = HTTPServer(('localhost', 8993), SimpleHTTPRequestHandler)
 httpd.serve_forever()
