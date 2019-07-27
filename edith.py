@@ -4,6 +4,7 @@ import time
 from io import BytesIO
 
 nicks = {}
+vehicles = {}
 granted = ["James_Bond", "Vittore_Deltoro", "James_Bond665", "Mauricio_Cedra", "Fernando_Guardado"]
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
@@ -25,16 +26,26 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         response = BytesIO()
         print(body.decode("utf-8"))
         info = json.loads(body.decode("utf-8"))
-        if info[0]["sender"] not in nicks:
-            nicks.update({info[0]["sender"]:{'timestamp':time.time(), 'heading': info[0]["heading"], 'health': info[0]["health"], 'x':info[0]["pos"]["x"], 'y':info[0]["pos"]["y"],'z':info[0]["pos"]["z"]}})
-            print(nicks)
-        else:
-            print(nicks[info[0]["sender"]]["timestamp"])
-            if nicks[info[0]["sender"]]["timestamp"] < time.time():
-                nicks.update({info[0]["sender"]:{'timestamp':time.time(), 'heading': info[0]["heading"], 'health': info[0]["health"], 'x':info[0]["pos"]["x"], 'y':info[0]["pos"]["y"],'z':info[0]["pos"]["z"]}})
-                print(nicks)
-
-        response.write(str.encode(json.dumps(nicks)))
+        if "sender" in info:
+            if info["sender"]["sender"] not in nicks:
+                nicks.update({info["sender"]["sender"]:{'timestamp':time.time(), 'heading': info["sender"]["heading"], 'health': info["sender"]["health"], 'x':info["sender"]["pos"]["x"], 'y':info["sender"]["pos"]["y"],'z':info["sender"]["pos"]["z"]}})
+            else:
+                if nicks[info["sender"]["sender"]]["timestamp"] < time.time():
+                    nicks.update({info["sender"]["sender"]:{'timestamp':time.time(), 'heading': info["sender"]["heading"], 'health': info["sender"]["health"], 'x':info["sender"]["pos"]["x"], 'y':info["sender"]["pos"]["y"],'z':info["sender"]["pos"]["z"]}})
+                    #print(nicks)
+        if "vehicles" in info:
+            inf = info["vehicles"]
+            for a in inf:
+                if a and a["id"] not in vehicles:
+                    vehicles.update({a["id"]:{'timestamp':time.time(), 'heading': a["heading"], 'engine': a["engine"], 'health': a["health"], 'x':a["pos"]["x"], 'y':a["pos"]["y"],'z':a["pos"]["z"]}})
+                else:
+                    if vehicles[a["id"]]["timestamp"] < time.time():
+                        vehicles.update({a["id"]:{'timestamp':time.time(), 'heading': a["heading"], 'engine': a["engine"],  'health': a["health"], 'x':a["pos"]["x"], 'y':a["pos"]["y"],'z':a["pos"]["z"]}})
+        answer = {}
+        answer["nicks"] = nicks
+        answer["vehicles"] = vehicles
+        response.write(str.encode(json.dumps(answer)))
+        print(json.dumps(answer))
         self.wfile.write(response.getvalue())
 
 def dict_to_binary(the_dict):
@@ -44,3 +55,4 @@ def dict_to_binary(the_dict):
 
 httpd = HTTPServer(('localhost', 8993), SimpleHTTPRequestHandler)
 httpd.serve_forever()
+    

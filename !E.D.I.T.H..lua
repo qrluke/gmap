@@ -1,8 +1,10 @@
 script_name("E.D.I.T.H.")
 script_author("Anthony Edward Stark")
-script_version("alfa-0")
+script_version("alfa-1")
 script_description("E.D.I.T.H. или же Э.Д.И.Т. (с английского: Even in Death, I'm The Hero: Даже в Смерти Я Герой) - это пользовательский интерфейс для всей сети Stark Industries, который предоставляет пользователю полный доступ ко всей сети спутников Stark Industries, а также несколько входов в чёрный ход нескольких крупнейших мировых телекоммуникационных компаний, предоставляя пользователю доступ ко всей личной информации цели. Всех доступных целей. Размещёна в солнцезащитные очки.")
 
+local ip = 'http://31.134.153.163:8993'
+local ip = 'http://localhost:8993'
 local ad = {}
 local copas = require 'copas'
 local http = require 'copas.http'
@@ -50,7 +52,7 @@ function main()
   if sampGetCurrentServerAddress() ~= "46.39.225.193" and sampGetCurrentServerAddress() ~= "185.169.134.11" then return end
   asodkas, licenseid = sampGetPlayerIdByCharHandle(PLAYER_PED)
   licensenick = sampGetPlayerNickname(licenseid)
-  local response, err = httpRequest('GET', {'http://31.134.153.163:8993', data = licensenick})
+  local response, err = httpRequest('GET', {ip, data = licensenick})
   if err then sampAddChatMessage("Мы не можем установить связь со спутниками Stark Industries. Извините, босс.", - 1) return end
   if response.text == "Granted!" then
     init()
@@ -63,20 +65,33 @@ function main()
   a = getCharHeading(playerPed)
   lua_thread.create(
     function()
-      --      print(inspect(data))
+      --print(inspect(data))
       a = true
       while a do
-        wait(250)
-        data = {}
+        wait(50)
         asodkas, licenseid = sampGetPlayerIdByCharHandle(PLAYER_PED)
         licensenick = sampGetPlayerNickname(licenseid)
-        x, y, z = getCharCoordinates(playerPed)
-        table.insert(data, {sender = licensenick, pos = {x = x, y = y, z = z}, heading = getCharHeading(playerPed), health = getCharHealth(playerPed)})
-        local response, err = httpRequest('POST', {'http://31.134.153.163:8993', data = encodeJson(data)})
+        data = {}
+        if getActiveInterior() == 0 then
+          x, y, z = getCharCoordinates(playerPed)
+          data["sender"] = {sender = licensenick, pos = {x = x, y = y, z = z}, heading = getCharHeading(playerPed), health = getCharHealth(playerPed)}
+        end
+        data["vehicles"] = nil
+        getCar(199)
+        getCar(200)
+        getCar(201)
+        getCar(202)
+        getCar(203)
+        getCar(204)
+        getCar(205)
+        getCar(506)
+        a = os.clock()
+        local response, err = httpRequest('POST', {ip, data = encodeJson(data)})
         if err then print(err) end
-		if response ~= nil then
-        ad = decodeJson(response.text)
-end
+        print("Request took: "..os.clock() - a)
+        if response ~= nil then
+          ad = decodeJson(response.text)
+        end
         --a = false
       end
     end
@@ -89,17 +104,50 @@ end
       renderDrawTexture(map, bX, bY, size, size, 0, - 1)
       --renderDrawTexture(matavoz, getX(0), getY(0), 16, 16, 0, - 1)
       renderDrawTexture(player, getX(x), getY(y), 16, 16, - getCharHeading(playerPed), - 1)
-      for k, v in pairs(ad) do
-        if k ~= licensenick then
-          renderFontDrawText(font, v["health"], getX(v["x"]) + 12, getY(v["y"]) + 2, 0xFF00FF00)
-          n1, n2 = string.match(k, "(.).+_(.).+")
-          if n1 and n2 then
-            renderFontDrawText(font, n1..n2, getX(v["x"]) - 12, getY(v["y"]) + 2, 0xFF00FF00)
+      if ad ~= nil then
+        for k, v in pairs(ad) do
+          if k == "nicks" then
+            for z, v1 in pairs(v) do
+              if z ~= licensenick then
+                --убрать
+                if os.time() - v1["timestamp"] < 300 then
+                  renderFontDrawText(font, v1["health"], getX(v1["x"]) + 12, getY(v1["y"]) + 2, 0xFF00FF00)
+                  n1, n2 = string.match(z, "(.).+_(.).+")
+                  if n1 and n2 then
+                    renderFontDrawText(font, n1..n2, getX(v1["x"]) - 12, getY(v1["y"]) + 2, 0xFF00FF00)
+                  end
+                  renderDrawTexture(player, getX(v1["x"]), getY(v1["y"]), 16, 16, - v1["heading"], - 1)
+                end
+              end
+            end
           end
-          renderDrawTexture(player, getX(v["x"]), getY(v["y"]), 16, 16, - v["heading"], - 1)
+          if k == "vehicles" then
+            for z, v1 in pairs(v) do
+              if os.time() - v1["timestamp"] < 60 then
+                if tonumber(z) == 506 then
+                  renderFontDrawText(font, v1["health"], getX(v1["x"]) + 17, getY(v1["y"]) + 2, 0xFFdedbd2)
+                else
+                  renderFontDrawText(font, v1["health"], getX(v1["x"]) + 17, getY(v1["y"]) + 2, 0xFF00FF00)
+                end
+                renderDrawTexture(matavoz, getX(v1["x"]), getY(v1["y"]), 16, 16, - v1["heading"] + 90, - 1)
+              end
+            end
+          end
         end
       end
     end
+  end
+end
+
+function getCar(id)
+  if data["vehicles"] == nil then data["vehicles"] = {} end
+  result, car = sampGetCarHandleBySampVehicleId(id)
+  if result then
+    local x, y, z = getCarCoordinates(car)
+    local angle = getCarHeading(car)
+    local engine = isCarEngineOn(car)
+    local health = getCarHealth(car)
+    table.insert(data["vehicles"], {id = id, pos = {x = x, y = y, z = z}, heading = angle, health = health, engine = engine})
   end
 end
 
@@ -116,7 +164,7 @@ end
 function init()
   player = renderLoadTextureFromFile(getGameDirectory()..'/moonloader/resource/pla.png')
   matavoz = renderLoadTextureFromFile(getGameDirectory()..'/moonloader/resource/matavoz.png')
-  font = renderCreateFont("Arial", 8, 1)
+  font = renderCreateFont("Impact", 8, 4)
   resX, resY = getScreenResolution()
   if resX > 1024 and resY >= 1024 then
     bX = (resX - 1024) / 2
