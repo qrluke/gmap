@@ -37,13 +37,24 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             inf = info["vehicles"]
             for a in inf:
                 if a and a["id"] not in vehicles:
-                    vehicles.update({a["id"]:{'timestamp':time.time(), 'heading': a["heading"], 'engine': a["engine"], 'health': a["health"], 'x':a["pos"]["x"], 'y':a["pos"]["y"],'z':a["pos"]["z"]}})
+    
+                    if "health" in a:
+                        vehicles.update({a["id"]:{'timestamp':time.time(), 'heading': a["heading"], 'engine': a["engine"], 'health': a["health"], 'healthstamp': time.time(), 'x':a["pos"]["x"], 'y':a["pos"]["y"],'z':a["pos"]["z"]}})
+                    else:
+                        vehicles.update({a["id"]:{'timestamp':time.time(), 'heading': a["heading"], 'engine': a["engine"], 'x':a["pos"]["x"], 'health': "xz", 'healthstamp': time.time(), 'y':a["pos"]["y"],'z':a["pos"]["z"]}})
                 else:
                     if vehicles[a["id"]]["timestamp"] < time.time():
-                        vehicles.update({a["id"]:{'timestamp':time.time(), 'heading': a["heading"], 'engine': a["engine"],  'health': a["health"], 'x':a["pos"]["x"], 'y':a["pos"]["y"],'z':a["pos"]["z"]}})
+                        if "health" in a:
+                            print("novoe")
+
+                            vehicles.update({a["id"]:{'timestamp':time.time(), 'heading': a["heading"], 'engine': a["engine"],  'health': a["health"], 'healthstamp': time.time(), 'x':a["pos"]["x"], 'y':a["pos"]["y"],'z':a["pos"]["z"]}})
+                        else:
+                            print("staroe")
+                            vehicles.update({a["id"]:{'timestamp':time.time(), 'heading': a["heading"], 'engine': a["engine"], 'health': vehicles[a["id"]]["health"],'healthstamp': vehicles[a["id"]]["healthstamp"], 'x':a["pos"]["x"], 'y':a["pos"]["y"],'z':a["pos"]["z"]}})
         answer = {}
         answer["nicks"] = nicks
         answer["vehicles"] = vehicles
+        answer["timestamp"] = time.time()
         response.write(str.encode(json.dumps(answer)))
         print(json.dumps(answer))
         self.wfile.write(response.getvalue())
