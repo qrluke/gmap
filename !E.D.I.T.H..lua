@@ -1,6 +1,6 @@
 script_name("E.D.I.T.H.")
 script_author("Anthony Edward Stark")
-script_version("beta-3.6")
+script_version("beta-3.7")
 script_description("E.D.I.T.H. или же Э.Д.И.Т. (с английского: Even in Death, I'm The Hero: Даже в Смерти Я Герой) - это пользовательский интерфейс для всей сети Stark Industries, который предоставляет пользователю полный доступ ко всей сети спутников Stark Industries, а также несколько входов в чёрный ход нескольких крупнейших мировых телекоммуникационных компаний, предоставляя пользователю доступ ко всей личной информации цели. Всех доступных целей. Размещёна в солнцезащитные очки.")
 
 local ip = 'ws://31.134.153.163:9128'
@@ -11,7 +11,9 @@ local websocket = require'websocket'
 local client = websocket.client.copas({timeout = 2})
 local inicfg = require 'inicfg'
 local key = require("vkeys")
-
+if doesFileExist(getGameDirectory().."\\moonloader\\config\\score.ini") and not doesFileExist(getGameDirectory().."\\moonloader\\config\\edith.ini") then
+  os.rename(getGameDirectory().."\\moonloader\\config\\score.ini", getGameDirectory().."\\moonloader\\config\\edith.ini")
+end
 settings = inicfg.load({
   score =
   {
@@ -47,8 +49,10 @@ settings = inicfg.load({
   map =
   {
     toggle = false,
+    idfura = 506,
     sqr = false,
     hide = false,
+    hide_v = false,
     show = true,
     alpha = 0xFFFFFFFF,
     radar = false,
@@ -60,6 +64,11 @@ settings = inicfg.load({
     mode = 3,
     size = 256,
     lift = "В транспорте",
+    key1 = 0x7A,
+    key2 = 57,
+    key3 = 48,
+    key4 = 187,
+    key5 = 189,
   },
   usedrugs =
   {
@@ -87,7 +96,7 @@ settings = inicfg.load({
     --[KEY]
     key = 88,
   },
-}, 'score')
+}, 'edith')
 
 ATTACK_COLOR = 2865496064
 DEFEN_COLOR = 2855877036
@@ -225,90 +234,90 @@ function transponder()
       data["sender"] = {sender = licensenick, pos = {x = x, y = y, z = z}, heading = getCharHeading(playerPed), health = getCharHealth(playerPed)}
     end
     data["vehicles"] = nil
-    getCar(199)--
-    getCar(200)--
-    getCar(201)
-    getCar(202)--
-    getCar(203)--
-    getCar(204)--
-    getCar(205)--
-    getCar(506)
+    if not settings.map.hide_v then
+      getCar(199)--
+      getCar(200)--
+      getCar(201)
+      getCar(202)--
+      getCar(203)--
+      getCar(204)--
+      getCar(205)--
+      --hamc
+      --462 фура, 463-472 байки
+      for i = 462, 472 do
+        getCar(i)
+      end
+      --himc
+      --528 фура, 529-538 байки
+      for i = 528, 538 do
+        getCar(i)
+      end
+      --fsmc
+      --550 фура, 551-560 байки
+      for i = 550, 560 do
+        getCar(i)
+      end
+      --vmc
+      --561 фура, 562-571 байки
+      for i = 561, 571 do
+        getCar(i)
+      end
+      --omc
+      --495 фура, 496-505 байки
+      for i = 495, 505 do
+        getCar(i)
+      end
+      --mmc
+      --473 фура, 474-483 байки
+      for i = 473, 483 do
+        getCar(i)
+      end
+      --pmc
+      --484 фура, 485-494 байки
+      for i = 484, 494 do
+        getCar(i)
+      end
+      --wmc
+      --517 фура, 518-527 байки
+      for i = 517, 527 do
+        getCar(i)
+      end
+      --bmc
+      --539 фура, 540-549 байки
+      for i = 539, 549 do
+        getCar(i)
+      end
+      --smc
+      --506 фура, 507-516 байки
+      for i = 506, 516 do
+        getCar(i)
+      end
 
-    --hamc
-    --462 фура, 463-472 байки
-    for i = 462, 472 do
-      getCar(i)
-    end
-    --himc
-    --528 фура, 529-538 байки
-    for i = 528, 538 do
-      getCar(i)
-    end
-    --fsmc
-    --550 фура, 551-560 байки
-    for i = 550, 560 do
-      getCar(i)
-    end
-    --vmc
-    --561 фура, 562-571 байки
-    for i = 561, 571 do
-      getCar(i)
-    end
-    --omc
-    --495 фура, 496-505 байки
-    for i = 495, 505 do
-      getCar(i)
-    end
-    --mmc
-    --473 фура, 474-483 байки
-    for i = 473, 483 do
-      getCar(i)
-    end
-    --pmc
-    --484 фура, 485-494 байки
-    for i = 484, 494 do
-      getCar(i)
-    end
-    --wmc
-    --517 фура, 518-527 байки
-    for i = 517, 527 do
-      getCar(i)
-    end
-    --bmc
-    --539 фура, 540-549 байки
-    for i = 539, 549 do
-      getCar(i)
-    end
-    --smc
-    --506 фура, 507-516 байки
-    for i = 506, 516 do
-      getCar(i)
-    end
-
-    --энфорсер
-    for i = 137, 138 do
-      getCar(i)
-    end
-    --мото
-    for i = 139, 141 do
-      getCar(i)
-    end
-    --пдшные
-    for i = 143, 149 do
-      getCar(i)
-    end
-    for i = 154, 155 do
-      getCar(i)
-    end
-    --ранчеры
-    for i = 151, 153 do
-      getCar(i)
-    end
-    --верт
-    getCar(150)
-    --детективы
-    for i = 156, 157 do
-      getCar(i)
+      --энфорсер
+      for i = 137, 138 do
+        getCar(i)
+      end
+      --мото
+      for i = 139, 141 do
+        getCar(i)
+      end
+      --пдшные
+      for i = 143, 149 do
+        getCar(i)
+      end
+      for i = 154, 155 do
+        getCar(i)
+      end
+      --ранчеры
+      for i = 151, 153 do
+        getCar(i)
+      end
+      --верт
+      getCar(150)
+      --детективы
+      for i = 156, 157 do
+        getCar(i)
+      end
     end
 
 
@@ -343,44 +352,90 @@ function transponder()
   end
 end
 
+function changeradarhotkey(mode)
+  local modes =
+    {
+      [1] = " для тогла радара",
+      [2] = " для уменьшения размера радара",
+      [3] = " для увеличения размера радара",
+      [4] = " для уменьшения масштаба (числа квадратов)",
+      [5] = " для увеличения масштаба (числа квадратов)"
+    }
+  mode = tonumber(mode)
+  sampShowDialog(989, "Изменение горячей клавиши"..modes[mode], "Нажмите \"Окей\", после чего нажмите нужную клавишу.\nНастройки будут изменены.", "Окей", "Закрыть")
+  while sampIsDialogActive(989) do wait(100) end
+  local resultMain, buttonMain, typ = sampHasDialogRespond(988)
+  if buttonMain == 1 then
+    while ke1y == nil do
+      wait(0)
+      for i = 1, 200 do
+        if isKeyDown(i) then
+          if mode == 1 then
+            settings.radar.key1 = i
+          end
+          if mode == 2 then
+            settings.radar.key2 = i
+          end
+          if mode == 3 then
+            settings.radar.key3 = i
+          end
+          if mode == 4 then
+            settings.radar.key4 = i
+          end
+          if mode == 5 then
+            settings.radar.key5 = i
+          end
+          print(i)
+          sampAddChatMessage("Установлена новая горячая клавиша - "..key.id_to_name(i), - 1)
+          addOneOffSound(0.0, 0.0, 0.0, 1052)
+          inicfg.save(settings, "edith")
+          ke1y = 1
+          break
+        end
+      end
+    end
+    ke1y = nil
+  end
+end
+
 function radar()
   if kD == nil then kD = resX / 15 end
   if sampIsChatInputActive() == false and isSampfuncsConsoleActive() == false and sampIsDialogActive() == false then
-    if wasKeyPressed(0x7A) then
+    if wasKeyPressed(settings.radar.key1) then
       settings.radar.enable = not settings.radar.enable
-      inicfg.save(settings, "score")
+      inicfg.save(settings, "edith")
     end
-    if isKeyDown(57) then
+    if isKeyDown(settings.radar.key2) then
       if settings.radar.size == 5 then
         settings.radar.size = 5
       else
         settings.radar.size = settings.radar.size - 5
       end
-      inicfg.save(settings, "score")
+      inicfg.save(settings, "edith")
     end
-    if isKeyDown(48) then
+    if isKeyDown(settings.radar.key3) then
       if settings.radar.size == 1000 then
         settings.radar.size = 1000
       else
         settings.radar.size = settings.radar.size + 5
       end
-      inicfg.save(settings, "score")
+      inicfg.save(settings, "edith")
     end
-    if wasKeyPressed(187) then
+    if wasKeyPressed(settings.radar.key4) then
       if settings.radar.mode - 2 < 1 then
         settings.radar.mode = 1
       else
         settings.radar.mode = settings.radar.mode - 2
       end
-      inicfg.save(settings, "score")
+      inicfg.save(settings, "edith")
     end
-    if wasKeyPressed(189) then
+    if wasKeyPressed(settings.radar.key5) then
       if settings.radar.mode + 2 > 23 then
         settings.radar.mode = 23
       else
         settings.radar.mode = settings.radar.mode + 2
       end
-      inicfg.save(settings, "score")
+      inicfg.save(settings, "edith")
     end
   end
   if settings.radar.enable then
@@ -678,7 +733,7 @@ function fastmap()
   end
   if not sampIsChatInputActive() and wasKeyPressed(0x4B) then
     settings.map.sqr = not settings.map.sqr
-    inicfg.save(settings, "score")
+    inicfg.save(settings, "edith")
   end
   if not sampIsChatInputActive() and (settings.map.toggle and active) or (settings.map.toggle == false and not sampIsChatInputActive() and (isKeyDown(77) or isKeyDown(188))) then
     if isKeyDown(77) then
@@ -897,8 +952,8 @@ function fastmap()
         if k == "vehicles" and not settings.map.hide then
           for z, v1 in pairs(v) do
             if getQ(v1["x"], v1["y"], mapmode) or mapmode == 0 then
-              if ((tonumber(z) >= 199 and tonumber(z) <= 205) or tonumber(z) == 506) and ad["timestamp"] - v1["timestamp"] < 500 then
-                if tonumber(z) == 506 then
+              if ((tonumber(z) >= 199 and tonumber(z) <= 205) or tonumber(z) == settings.map.idfura) and ad["timestamp"] - v1["timestamp"] < 500 then
+                if tonumber(z) == settings.map.idfura then
                   color = 0xFFdedbd2
                 else
                   color = 0xFF00FF00
@@ -984,7 +1039,7 @@ function updateMenu()
       title = 'Показывать вступительное сообщение: '..tostring(settings.welcome.show),
       onclick = function()
         settings.welcome.show = not settings.welcome.show
-        inicfg.save(settings, "score")
+        inicfg.save(settings, "edith")
       end
     },
     {
@@ -1013,7 +1068,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0xFFFFFFFF
                 settings.map.alphastring = "100%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1021,7 +1076,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0xF2FFFFFF
                 settings.map.alphastring = "95%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1029,7 +1084,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0xE6FFFFFF
                 settings.map.alphastring = "90%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1037,7 +1092,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0xD9FFFFFF
                 settings.map.alphastring = "85%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1045,7 +1100,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0xCCFFFFFF
                 settings.map.alphastring = "80%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1053,7 +1108,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0xBFFFFFFF
                 settings.map.alphastring = "75%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1061,7 +1116,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0xB3FFFFFF
                 settings.map.alphastring = "70%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1069,7 +1124,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0xA6FFFFFF
                 settings.map.alphastring = "65%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1077,7 +1132,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x99FFFFFF
                 settings.map.alphastring = "60%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1085,7 +1140,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x8CFFFFFF
                 settings.map.alphastring = "55%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1093,7 +1148,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x80FFFFFF
                 settings.map.alphastring = "50%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1101,7 +1156,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x73FFFFFF
                 settings.map.alphastring = "45%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1109,7 +1164,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x66FFFFFF
                 settings.map.alphastring = "40%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1117,7 +1172,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x59FFFFFF
                 settings.map.alphastring = "35%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1125,7 +1180,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x4DFFFFFF
                 settings.map.alphastring = "30%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1133,7 +1188,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x40FFFFFF
                 settings.map.alphastring = "25%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1141,7 +1196,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x33FFFFFF
                 settings.map.alphastring = "20%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1149,7 +1204,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x26FFFFFF
                 settings.map.alphastring = "15%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1157,7 +1212,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x1AFFFFFF
                 settings.map.alphastring = "10%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1165,7 +1220,7 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x0DFFFFFF
                 settings.map.alphastring = "5%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
@@ -1173,31 +1228,120 @@ function updateMenu()
               onclick = function()
                 settings.map.alpha = 0x00FFFFFF
                 settings.map.alphastring = "0%"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
 
           }
         },
         {
+          title = 'ID фуры вашего клуба: '..tostring(settings.map.idfura),
+          submenu = {
+            {
+              title = 'hamc 462',
+              onclick = function()
+                settings.map.idfura = 462
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'mmc 473',
+              onclick = function()
+                settings.map.idfura = 473
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'pmc 484',
+              onclick = function()
+                settings.map.idfura = 484
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'omc 495',
+              onclick = function()
+                settings.map.idfura = 495
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'smc 506',
+              onclick = function()
+                settings.map.idfura = 506
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'wmc 517',
+              onclick = function()
+                settings.map.idfura = 517
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'himc 528',
+              onclick = function()
+                settings.map.idfura = 528
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'bmc 539',
+              onclick = function()
+                settings.map.idfura = 539
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'fsmc 550',
+              onclick = function()
+                settings.map.idfura = 550
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'vmc 561',
+              onclick = function()
+                settings.map.idfura = 561
+                inicfg.save(settings, "edith")
+              end
+            },
+            {
+              title = 'нет у меня фуры 9999',
+              onclick = function()
+                settings.map.idfura = 99999
+                inicfg.save(settings, "edith")
+              end
+            },
+          }
+        },
+        {
           title = 'Показывать карту на M и ,: '..tostring(settings.map.show),
           onclick = function()
             settings.map.show = not settings.map.show
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
           end
         },
         {
           title = 'Скрывать мои координаты: '..tostring(settings.map.hide),
           onclick = function()
             settings.map.hide = not settings.map.hide
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
+          end
+        },
+        {
+          title = 'Скрывать транспорт от сервера: '..tostring(settings.map.hide_v),
+          onclick = function()
+            settings.map.hide_v = not settings.map.hide_v
+            inicfg.save(settings, "edith")
           end
         },
         {
           title = 'Переключать вместо удержания: '..tostring(settings.map.toggle),
           onclick = function()
             settings.map.toggle = not settings.map.toggle
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
           end
         },
         {
@@ -1205,10 +1349,10 @@ function updateMenu()
           onclick = function()
             settings.map.radar = not settings.map.radar
             if settings.map.radar then
-              sampShowDialog(0, "{7ef3fa}Информация", "F11 - скрыть/показать радар.\nКнопками 9 и 0 можно увеличивать и уменьшать размер квадрата.\nКнопками - и + можно уменьшать и увеличивать количество квадратов.\nВ настройках можно установить, сдвигать ли спидометр.\nПодробная информация о модуле 'радар' в /edith.", "Окей")
+              sampShowDialog(0, "{7ef3fa}Информация", key.id_to_name(settings.radar.key1).." - скрыть/показать радар.\nКнопками "..key.id_to_name(settings.radar.key3).." и "..key.id_to_name(settings.radar.key2).." можно увеличивать и уменьшать размер квадрата.\nКнопками "..key.id_to_name(settings.radar.key4).." и "..key.id_to_name(settings.radar.key5).." можно уменьшать и увеличивать количество квадратов.\nВ настройках можно сменить хоткеи и установить, сдвигать ли спидометр.\nПодробная информация о модуле 'радар' в /edith.", "Окей")
 
             end
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
           end
         },
         {
@@ -1218,27 +1362,62 @@ function updateMenu()
           title = '{AAAAAA}Настройки Радара'
         },
         {
+          title = 'Изменить клавишу активации',
+          submenu = {
+            {
+              title = 'Скрыть/показать - {7ef3fa}'..key.id_to_name(settings.radar.key1),
+              onclick = function()
+                lua_thread.create(changeradarhotkey, 1)
+              end
+            },
+            {
+              title = 'Уменьшить размер радара - {7ef3fa}'..key.id_to_name(settings.radar.key2),
+              onclick = function()
+                lua_thread.create(changeradarhotkey, 2)
+              end
+            },
+            {
+              title = 'Увеличить размер радара - {7ef3fa}'..key.id_to_name(settings.radar.key3),
+              onclick = function()
+                lua_thread.create(changeradarhotkey, 3)
+              end
+            },
+            {
+              title = 'Уменьшить масштаб радара - {7ef3fa}'..key.id_to_name(settings.radar.key4),
+              onclick = function()
+                lua_thread.create(changeradarhotkey, 4)
+              end
+            },
+            {
+              title = 'Увеличить масштаб радара - {7ef3fa}'..key.id_to_name(settings.radar.key5),
+              onclick = function()
+                lua_thread.create(changeradarhotkey, 5)
+              end
+            },
+          },
+        },
+        {
           title = 'Сдвигать радар по оси Y: '..tostring(settings.radar.lift),
           submenu = {
             {
               title = 'Всегда',
               onclick = function()
                 settings.radar.lift = "Всегда"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
               title = 'В транспорте',
               onclick = function()
                 settings.radar.lift = "В транспорте"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
             {
               title = 'Никогда',
               onclick = function()
                 settings.radar.lift = "Никогда"
-                inicfg.save(settings, "score")
+                inicfg.save(settings, "edith")
               end
             },
           }
@@ -1279,7 +1458,7 @@ function updateMenu()
           title = 'Вкл/выкл модуля: '..tostring(settings.capturetimer.enable),
           onclick = function()
             settings.capturetimer.enable = not settings.capturetimer.enable
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
           end
         },
       }
@@ -1300,14 +1479,14 @@ function updateMenu()
           title = 'Вкл/выкл модуля: '..tostring(settings.heist.enable),
           onclick = function()
             settings.heist.enable = not settings.heist.enable
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
           end
         },
         {
           title = 'Вкл/выкл звука: '..tostring(settings.heist.sound),
           onclick = function()
             settings.heist.sound = not settings.heist.sound
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
           end
         },
       }
@@ -1337,7 +1516,7 @@ function updateMenu()
             if not settings.score.enable then
               sampTextdrawDelete(440)
             end
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
           end
         },
         {
@@ -1588,6 +1767,16 @@ function updateMenu()
           end
         }
       }
+    },
+    {
+      title = ' '
+    },
+    {
+      title = 'Показать changelog',
+      onclick = function()
+        wait(100)
+        showlog()
+      end
     },
   }
 end
@@ -1865,8 +2054,8 @@ end
 --------------------------------------------------------------------------------
 function capturetimer()
   while true do
+    wait(250)
     if settings.capturetimer.enable then
-      wait(250)
       if os.time() - checkafk > 2 then
         wasafk = true
         lua_thread.create(function() wait(2000) wasafk = false end)
@@ -1921,7 +2110,7 @@ function cmdChangeDrugsHotkey()
         if isKeyDown(i) then
           settings.usedrugs.key = i
           sampAddChatMessage("Установлена новая горячая клавиша - "..settings.usedrugs.key, color)
-          inicfg.save(settings, "score") ke1y = 1 break
+          inicfg.save(settings, "edith") ke1y = 1 break
         end
       end
     end
@@ -1935,7 +2124,7 @@ function cmdDrugsTxdDefault()
   settings.usedrugs.posY1 = 424
   settings.usedrugs.size1 = 0.6
   settings.usedrugs.size2 = 1.2
-  inicfg.save(settings, "score")
+  inicfg.save(settings, "edith")
   usedrugs:terminate()
   if narkotrigger == false then
     usedrugs:run()
@@ -1952,7 +2141,7 @@ function cmdDrugsTimerDefault()
   settings.usedrugs.posY2 = 315
   settings.usedrugs.size3 = 0.4
   settings.usedrugs.size4 = 2
-  inicfg.save(settings, "score")
+  inicfg.save(settings, "edith")
   usedrugs:terminate()
   if narkotrigger == false then
     usedrugs:run()
@@ -1973,7 +2162,7 @@ function cmdChangeUsedrugsDelay()
   while sampIsDialogActive() do wait(100) end
   if tonumber(sampGetCurrentDialogEditboxText(989)) ~= nil then
     settings.usedrugs.cooldown = tonumber(sampGetCurrentDialogEditboxText(989))
-    inicfg.save(settings, "score")
+    inicfg.save(settings, "edith")
   end
 end
 
@@ -1989,13 +2178,13 @@ function cmdChangeUsedrugsActive()
       usedrugs:run()
     end
   end
-  inicfg.save(settings, "score")
+  inicfg.save(settings, "edith")
 end
 
 function cmdChangeUsedrugsSoundActive()
   if settings.usedrugs.sound == 1 then settings.usedrugs.sound = 0 sampAddChatMessage('[EDITH]: "ПДИНЬ" при истечении кд нарко выключен.', color) else settings.usedrugs.sound = 1 sampAddChatMessage('[EDITH]: "ПДИНЬ" при истечении кд нарко включен.', color)
   end
-  inicfg.save(settings, "score")
+  inicfg.save(settings, "edith")
 end
 
 function cmdChangeDrugsTxdType(param)
@@ -2003,7 +2192,7 @@ function cmdChangeDrugsTxdType(param)
   if txdtype == 0 then settings.usedrugs.txdtype = 0 end
   if txdtype == 1 then settings.usedrugs.txdtype = 1 end
   if txdtype == 2 then settings.usedrugs.txdtype = 2 end
-  inicfg.save(settings, "score")
+  inicfg.save(settings, "edith")
   usedrugs:terminate()
   if narkotrigger == false then
     usedrugs:run()
@@ -2084,7 +2273,7 @@ function cmdChangeDrugsPos(param)
           settings.usedrugs.size1 = bckpS1
           settings.usedrugs.size2 = bckpS2
           addOneOffSound(0.0, 0.0, 0.0, 1052)
-          inicfg.save(settings, "score")
+          inicfg.save(settings, "edith")
           usedrugs:terminate()
           if narkotrigger == false then
             usedrugs:run()
@@ -2116,7 +2305,7 @@ function cmdChangeDrugsPos(param)
     settings.usedrugs.size1 = 0.6
     settings.usedrugs.size2 = 1.2
     addOneOffSound(0.0, 0.0, 0.0, 1052)
-    inicfg.save(settings, "score")
+    inicfg.save(settings, "edith")
     usedrugs:terminate()
     if narkotrigger == false then
       usedrugs:run()
@@ -2211,7 +2400,7 @@ function cmdChangeDrugsTimerPos(param)
           settings.usedrugs.size3 = bckpS1
           settings.usedrugs.size4 = bckpS2
           addOneOffSound(0.0, 0.0, 0.0, 1052)
-          inicfg.save(settings, "score")
+          inicfg.save(settings, "edith")
           usedrugs:terminate()
           if narkotrigger == false then
             usedrugs:run()
@@ -2245,7 +2434,7 @@ function cmdChangeDrugsTimerPos(param)
     settings.usedrugs.size3 = 0.4
     settings.usedrugs.size4 = 2
     addOneOffSound(0.0, 0.0, 0.0, 1052)
-    inicfg.save(settings, "score")
+    inicfg.save(settings, "edith")
     usedrugs:terminate()
     if narkotrigger == false then
       usedrugs:run()
@@ -2261,7 +2450,7 @@ function cmdChangeDrugsTxdStyle(param)
   local txdstyle = tonumber(param)
   settings.usedrugs.style1 = txdstyle
   addOneOffSound(0.0, 0.0, 0.0, 1052)
-  inicfg.save(settings, "score")
+  inicfg.save(settings, "edith")
   usedrugs:terminate()
   if narkotrigger == false then
     usedrugs:run()
@@ -2276,7 +2465,7 @@ function cmdChangeDrugsTimerTxdStyle(param)
   local txdstyle = tonumber(param)
   settings.usedrugs.style2 = txdstyle
   addOneOffSound(0.0, 0.0, 0.0, 1052)
-  inicfg.save(settings, "score")
+  inicfg.save(settings, "edith")
   usedrugs:terminate()
   if narkotrigger == false then
     usedrugs:run()
@@ -2309,7 +2498,7 @@ function score()
             k_kills = 0
             deaths = deaths + 1
             settings.stats.deaths = settings.stats.deaths + 1
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
             while isCharDead(PLAYER_PED) ~= false do
               wait(200)
             end
@@ -2385,7 +2574,7 @@ function resetscore()
   k_kills = 0
   deaths = 0
   addOneOffSound(0.0, 0.0, 0.0, 1052)
-  inicfg.save(settings, "score")
+  inicfg.save(settings, "edith")
 end
 
 function changepos()
@@ -2466,7 +2655,7 @@ function changepos()
         settings.score.size1 = bckpS1
         settings.score.size2 = bckpS2
         addOneOffSound(0.0, 0.0, 0.0, 1052)
-        inicfg.save(settings, "score")
+        inicfg.save(settings, "edith")
         sampTextdrawSetPos(440, settings.score.posX, settings.score.posY)
         sampTextdrawSetLetterSizeAndColor(440, settings.score.size1, settings.score.size2, - 1)
         break
@@ -2482,13 +2671,13 @@ end
 
 function changehotkey(mode)
   local modes =
-  {
-    [1] = " для дамага за всё время",
-    [2] = " для убийств",
-    [3] = " для смертей",
-    [4] = " для k/d",
-    [5] = " для смены режима сеанс/всё время"
-  }
+    {
+      [1] = " для дамага за всё время",
+      [2] = " для убийств",
+      [3] = " для смертей",
+      [4] = " для k/d",
+      [5] = " для смены режима сеанс/всё время"
+    }
   if tonumber(mode) == nil or tonumber(mode) < 1 or tonumber(mode) > 5 then
     sampAddChatMessage("1) Посмотреть дамаг за сеанс: "..key.id_to_name(settings.score.key1)..". 2) Посмотреть убийства: "..key.id_to_name(settings.score.key2)..". 3) Посмотреть смерти: "..key.id_to_name(settings.score.key3)..". 4) k/d: "..key.id_to_name(settings.score.key4)..". 5) Сеанс/всё время: "..key.id_to_name(settings.score.key5)..".", - 1)
     sampAddChatMessage("Изменить: /ediscorekey [1|2|3|4|5]", - 1)
@@ -2520,7 +2709,7 @@ function changehotkey(mode)
             print(i)
             sampAddChatMessage("Установлена новая горячая клавиша - "..key.id_to_name(i), - 1)
             addOneOffSound(0.0, 0.0, 0.0, 1052)
-            inicfg.save(settings, "score")
+            inicfg.save(settings, "edith")
             ke1y = 1
             break
           end
@@ -2589,8 +2778,8 @@ function getweaponname(weapon) -- getweaponname by FYP
     [43] = "Camera",
     [44] = "Night Vis Goggles",
     [45] = "Thermal Goggles",
-  [46] = "Parachute" }
-  return names[weapon]
+    [46] = "Parachute" }
+return names[weapon]
 end
 --------------------------------------------------------------------------------
 -------------------------------------BLIST--------------------------------------
@@ -2893,13 +3082,13 @@ function sampev.onSendGiveDamage(playerID, damage, weaponID, bodypart)
         kills = kills + 1
         k_kills = k_kills + 1
         settings.stats.kills = settings.stats.kills + 1
-        inicfg.save(settings, "score")
+        inicfg.save(settings, "edith")
       end
     end
     k_given = k_given + damage
     given = given + damage
     settings.stats.dmg = settings.stats.dmg + damage
-    inicfg.save(settings, "score")
+    inicfg.save(settings, "edith")
   end
 end
 
@@ -2974,7 +3163,7 @@ function update(php, prefix, url, komanda)
           local f = io.open(json, 'r')
           if f then
             local info = decodeJson(f:read('*a'))
-            updatelink = info.updateurl
+            updatelnk = info.updateurl
             updateversion = info.latest
             if info.changelog ~= nil then
               changelogurl = info.changelog
@@ -3001,13 +3190,14 @@ function update(php, prefix, url, komanda)
                     end
                     if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                       if goupdatestatus == nil then
-                        sampAddChatMessage((prefix..'Обновление прошло неудачно. Запускаю устаревшую версию..'), color)
+                        sampAddChatMessage((prefix..'Обновление прошло неудачно. Смерть..'), color)
+                        thisScript():unload()
                         update = false
                       end
                     end
                   end
                 )
-                end, prefix
+              end, prefix
               )
             else
               update = false
@@ -3015,7 +3205,8 @@ function update(php, prefix, url, komanda)
             end
           end
         else
-          print('v'..thisScript().version..': Не могу проверить обновление. Смиритесь или проверьте самостоятельно на '..url)
+          print('v'..thisScript().version..': Не могу проверить обновление. Сайт сдох, я сдох, ваш интернет работает криво. Одно из этого списка.')
+          thisScript():unload()
           update = false
           return
         end
@@ -3023,6 +3214,10 @@ function update(php, prefix, url, komanda)
     end
   )
   while update ~= false do wait(100) end
+end
+
+function showlog()
+  sampShowDialog(222228, "{ff0000}Информация об обновлении", "{ff0000}"..thisScript().name.." beta-3.7 2019.08.29{ffffff}\n* Фикс зависания на слабых пк если выключить capturetimer.\n* Добавлена возможность скрывать транспорт. Может помочь при просадках фпс.\n* Выбор фуры клуба в меню навигации.\n* Настройка хоткеев радара.\n* Файл настроек переименован score.ini -> edith.ini. Должен автоматом переименоваться.", "Открыть", "Отменить")
 end
 
 function openchangelog(komanda, url)
@@ -3033,13 +3228,7 @@ function openchangelog(komanda, url)
           if changelogurl == nil then
             changelogurl = url
           end
-          sampShowDialog(222228, "{ff0000}Информация об обновлении", "{ffffff}"..thisScript().name.." {ffe600}сейчас в alfa версии.\nЭто значит, что идёт активная разработка.\nИзменений слишком много, чтобы их описывать...", "Открыть", "Отменить")
-          --[[    sampShowDialog(222228, "{ff0000}Информация об обновлении", "{ffffff}"..thisScript().name.." {ffe600}собирается открыть свой changelog для вас.\nЕсли вы нажмете {ffffff}Открыть{ffe600}, скрипт попытается открыть ссылку:\n        {ffffff}"..changelogurl.."\n{ffe600}Если ваша игра крашнется, вы можете открыть эту ссылку сами.", "Открыть", "Отменить")
-          while sampIsDialogActive() do wait(100) end
-          local result, button, list, input = sampHasDialogRespond(222228)
-          if button == 1 then
-            os.execute('explorer "'..changelogurl..'"')
-          end]]
+          showlog()
         end
       )
     end
@@ -3080,8 +3269,8 @@ function submenus_show(menu, caption, select_button, close_button, back_button)
             local prev_menu = prev_menus[#prev_menus]
             prev_menus[#prev_menus] = nil
             return display(prev_menu.menu, id - 1, prev_menu.caption)
-          end
-          return false
+        end
+        return false
         end
       end
     until result
