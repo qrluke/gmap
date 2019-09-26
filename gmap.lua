@@ -7,7 +7,7 @@ script_description("Обмен координатами через сервер.")
 --[[ИЗМЕНИТЬ]]
 local ip = 'ws://31.134.153.163:9128' -- ЗДЕСЬ СЕРВЕР server.py
 local server = "185.169.134.11" -- ЗДЕСЬ СЕРВЕР САМПА
-local jsonlink = "http://qrlk.me/dev/moonloader/!edith/stats.php" --json для автообновления
+local jsonlink = "http://qrlk.me/dev/moonloader/!edith/stats.php" --автообновление, должен возвращать json
 --[[ИЗМЕНИТЬ]]
 
 local ip = 'ws://localhost:9128'
@@ -15,7 +15,7 @@ local ip = 'ws://localhost:9128'
 local websocket = require 'websocket'
 local client = websocket.client.copas({timeout = 2})
 local inicfg = require 'inicfg'
-local key = require("vkeys")
+local key = require 'vkeys'
 settings = inicfg.load({
   welcome =
   {
@@ -137,9 +137,6 @@ function init()
   if not doesDirectoryExist(getGameDirectory().."\\moonloader\\resource\\gmap") then
     createDirectory(getGameDirectory().."\\moonloader\\resource\\gmap")
   end
-  dn("map1024.png")
-  dn("map720.png")
-  dn("map512.png")
   dn("matavoz.png")
   dn("pla.png")
   dn('radar_centre.png')
