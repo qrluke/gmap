@@ -1,15 +1,3 @@
 James_Bond
-Luis_Kovalev
-Angelo_Mancini
-Knoerty_Ceonich
-Korzus_Xentrix
-Dominic_Chambers
-Hercule_Puaro
-Cecilio_Benavides
-Dell_Fill
-Anthony_Salerno
-Dean_Crow
-Vittore_Deltoro
-Mauricio_Cedra
-Fernando_Guardado
-JB7
+Nick_1
+Nick_2
