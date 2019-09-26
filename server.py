@@ -12,13 +12,13 @@ capture = {}
 # Called for every client connecting (after handshake)
 
 def new_client(client, server):
-    print 'Client connected'
+    print('Client connected')
 
 
 # Called for every client disconnecting
 
 def client_left(client, server):
-    print 'Client(%d) disconnected' % client['id']
+    print('Client(%d) disconnected' % client['id'])
 
 
 # Called when a client sends a message
@@ -110,7 +110,7 @@ def message_received(client, server, message):
         answer['vehicles'] = vehicles
         answer['timestamp'] = time.time()
         server.send_message(client, str.encode(json.dumps(answer)))
-        print 'Client(%d) said: %s' % (client['id'], message)
+        print ('Client(%d) said: %s' % (client['id'], message))
 
 
 PORT = 9128
