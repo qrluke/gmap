@@ -7,7 +7,7 @@ script_description("Обмен координатами через сервер.")
 --[[ИЗМЕНИТЬ]]
 local ip = 'ws://31.134.153.163:9128' -- ЗДЕСЬ СЕРВЕР server.py
 local server = "185.169.134.11" -- ЗДЕСЬ СЕРВЕР САМПА
-local jsonlink = "http://qrlk.me/dev/moonloader/!edith/stats.php" --автообновление, должен возвращать json
+local jsonlink = "https://raw.githubusercontent.com/qrlk/gmap/master/version.json" --автообновление, должен возвращать json
 --[[ИЗМЕНИТЬ]]
 
 local ip = 'ws://localhost:9128'
