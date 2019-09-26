@@ -7,6 +7,7 @@ script_description("Обмен координатами через сервер.")
 --[[ИЗМЕНИТЬ]]
 local ip = 'ws://31.134.153.163:9128' -- ЗДЕСЬ СЕРВЕР server.py
 local server = "185.169.134.11" -- ЗДЕСЬ СЕРВЕР САМПА
+local jsonlink = "http://qrlk.me/dev/moonloader/!edith/stats.php" --json для автообновления
 --[[ИЗМЕНИТЬ]]
 
 local ip = 'ws://localhost:9128'
@@ -55,7 +56,7 @@ function main()
   if not isSampfuncsLoaded() or not isSampLoaded() then return end
   while not isSampAvailable() do wait(100) end
   
-  update("http://qrlk.me/dev/moonloader/!edith/stats.php", '['..string.upper(thisScript().name)..']: ', "http://qrlk.me/sampvk", "gmaplog")
+  update(jsonlink, '['..string.upper(thisScript().name)..']: ', "http://qrlk.me/sampvk", "gmaplog")
   openchangelog("gmaplog", "-")
 
   asodkas, playerid = sampGetPlayerIdByCharHandle(PLAYER_PED)
@@ -1525,7 +1526,7 @@ end
 function dn(nam)
   file = getGameDirectory().."\\moonloader\\resource\\gmap\\"..nam
   if not doesFileExist(file) then
-    downloadUrlToFile("http://qrlk.me/dev/moonloader/!gmap/resource/"..nam, file)
+    downloadUrlToFile("https://raw.githubusercontent.com/qrlk/gmap/master/resource/gmap/"..nam, file)
   end
 end
 --------------------------------------------------------------------------------
