@@ -1561,7 +1561,7 @@ function update(php, prefix, url, komanda)
           local f = io.open(json, 'r')
           if f then
             local info = decodeJson(f:read('*a'))
-            updatelnk = info.updateurl
+            updatelink = info.updateurl
             updateversion = info.latest
             if info.changelog ~= nil then
               changelogurl = info.changelog
