@@ -12,7 +12,6 @@ local json_update_link = "http://qrlk.me/dev/moonloader/gmap/stats.php" --автооб
 if getMoonloaderVersion() >= 27 then
   -- Dependencies
   require 'deps' {
-    'fyp:samp-lua',
     'fyp:luasec',
     'fyp:copas'
   }
@@ -208,9 +207,9 @@ function main()
 
     sampAddChatMessage("{ffa500}>>>{ffffff} Открыть карту - {00ccff}"..tostring(key.id_to_name(settings.map.key1)).."{ffffff}, 1/4 - {00ccff}"..tostring(key.id_to_name(settings.map.key2)).."{ffffff}, режим 1/4 - {00ccff}"..tostring(key.id_to_name(settings.map.key3)).."{ffffff}, рендер - {00ccff}"..tostring(key.id_to_name(settings.map.render_key)).."{ffa500} <<<", 0x7ef3fa)
 
-		if settings.map.room == "" then
-			sampAddChatMessage("{7ef3fa}GMAP {ffa500}>>> {ff0000}Код комнаты не установлен {ffa500} >>> {ff0000} Введите {00ccff}/groom{ff0000} или {00ccff}/groom [код]{ff0000}!", 0xff0000)
-		end
+    if settings.map.room == "" then
+      sampAddChatMessage("{7ef3fa}GMAP {ffa500}>>> {ff0000}Код комнаты не установлен {ffa500} >>> {ff0000} Введите {00ccff}/groom{ff0000} или {00ccff}/groom [код]{ff0000}!", 0xff0000)
+    end
 
   end
   lua_thread.create(viewer)
@@ -221,7 +220,7 @@ function main()
         function(param)
           if param ~= "" then
             settings.map.room = param
-						wait(200)
+            wait(200)
             chat_active = true
             inicfg.save(settings, "gmap")
           else
@@ -240,10 +239,10 @@ function main()
             if button == 1 then
               settings.map.room = sampGetCurrentDialogEditboxText(9827)
               if settings.map.room ~= "" then
-								wait(200)
+                wait(200)
                 chat_active = true
-							else
-								active_users = -1
+              else
+                active_users = -1
               end
               inicfg.save(settings, "gmap")
             end
@@ -254,7 +253,7 @@ function main()
     end
   )
 
-	sampRegisterChatCommand("groomcopy",
+  sampRegisterChatCommand("groomcopy",
     function()
       setClipboardText(settings.map.room)
     end
@@ -937,18 +936,18 @@ function updateMenu()
     {
       title = "Информация о скрипте",
       onclick = function()
-				sampShowDialog(
-					0,
-					"{7ef3fa}/gmap v." .. thisScript().version .. ' - информация о скрипте',
-					"{ffffff}Скрипт предназначен для быстрого обмена координатами.\nКоординаты передаются через сервер между теми юзерами,\nкоторые выбрали одну комнату на одном сервере.\n\n{00ff66}Команды\n{7ef3fa}/groom{ffffff} - Установить код комнаты.\n{7ef3fa}/groom [code]{ffffff} - Установить код комнаты.\n{7ef3fa}/groomcopy{ffffff} - Скопировать код комнаты.\n\n{00ff66}Хоткеи\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key1)).."{ffffff} - открыть всю карту со всеми доступными данными.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key2)).."{ffffff} - открыть 1/4 карты. Стрелками можно перемещаться по ней.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key3)).."{ffffff} - сменить режим 1/4 карты: карта с квадратами или обычная.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.render_key)).."{ffffff} - рендер игроков на экране.",
-					"Окей"
-				)
+        sampShowDialog(
+          0,
+          "{7ef3fa}/gmap v." .. thisScript().version .. ' - информация о скрипте',
+          "{ffffff}Скрипт предназначен для быстрого обмена координатами.\nКоординаты передаются через сервер между теми юзерами,\nкоторые выбрали одну комнату на одном сервере.\n\n{00ff66}Команды\n{7ef3fa}/groom{ffffff} - Установить код комнаты.\n{7ef3fa}/groom [code]{ffffff} - Установить код комнаты.\n{7ef3fa}/groomcopy{ffffff} - Скопировать код комнаты.\n\n{00ff66}Хоткеи\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key1)).."{ffffff} - открыть всю карту со всеми доступными данными.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key2)).."{ffffff} - открыть 1/4 карты. Стрелками можно перемещаться по ней.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key3)).."{ffffff} - сменить режим 1/4 карты: карта с квадратами или обычная.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.render_key)).."{ffffff} - рендер игроков на экране.",
+          "Окей"
+        )
       end
     },
-		{
-			title = "История изменений",
-			submenu = changelog_menu
-		},
+    {
+      title = "История изменений",
+      submenu = changelog_menu
+    },
     {
       title = " "
     },
@@ -971,250 +970,250 @@ function updateMenu()
         }
       }
     },
-		{
-			title = "Изменить клавиши активации",
-			submenu = {
-				{
-					title = "Открыть большую карту - {7ef3fa}" .. key.id_to_name(settings.map.key1),
-					onclick = function()
-						lua_thread.create(changemaphotkey, 1)
-					end
-				},
-				{
-					title = "Открыть 1/4 карты - {7ef3fa}" .. key.id_to_name(settings.map.key2),
-					onclick = function()
-						lua_thread.create(changemaphotkey, 2)
-					end
-				},
-				{
-					title = "Сменить режим 1/4 карты- {7ef3fa}" .. key.id_to_name(settings.map.key3),
-					onclick = function()
-						lua_thread.create(changemaphotkey, 3)
-					end
-				}
-			}
-		},
-		{
-			title = " "
-		},
-		{
-			title = "Прозрачность: " .. tostring(settings.map.alphastring),
-			submenu = {
-				{
-					title = "100%",
-					onclick = function()
-						settings.map.alpha = 0xFFFFFFFF
-						settings.map.alphastring = "100%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "95%",
-					onclick = function()
-						settings.map.alpha = 0xF2FFFFFF
-						settings.map.alphastring = "95%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "90%",
-					onclick = function()
-						settings.map.alpha = 0xE6FFFFFF
-						settings.map.alphastring = "90%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "85%",
-					onclick = function()
-						settings.map.alpha = 0xD9FFFFFF
-						settings.map.alphastring = "85%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "80%",
-					onclick = function()
-						settings.map.alpha = 0xCCFFFFFF
-						settings.map.alphastring = "80%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "75%",
-					onclick = function()
-						settings.map.alpha = 0xBFFFFFFF
-						settings.map.alphastring = "75%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "70%",
-					onclick = function()
-						settings.map.alpha = 0xB3FFFFFF
-						settings.map.alphastring = "70%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "65%",
-					onclick = function()
-						settings.map.alpha = 0xA6FFFFFF
-						settings.map.alphastring = "65%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "60%",
-					onclick = function()
-						settings.map.alpha = 0x99FFFFFF
-						settings.map.alphastring = "60%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "55%",
-					onclick = function()
-						settings.map.alpha = 0x8CFFFFFF
-						settings.map.alphastring = "55%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "50%",
-					onclick = function()
-						settings.map.alpha = 0x80FFFFFF
-						settings.map.alphastring = "50%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "45%",
-					onclick = function()
-						settings.map.alpha = 0x73FFFFFF
-						settings.map.alphastring = "45%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "40%",
-					onclick = function()
-						settings.map.alpha = 0x66FFFFFF
-						settings.map.alphastring = "40%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "35%",
-					onclick = function()
-						settings.map.alpha = 0x59FFFFFF
-						settings.map.alphastring = "35%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "30%",
-					onclick = function()
-						settings.map.alpha = 0x4DFFFFFF
-						settings.map.alphastring = "30%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "25%",
-					onclick = function()
-						settings.map.alpha = 0x40FFFFFF
-						settings.map.alphastring = "25%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "20%",
-					onclick = function()
-						settings.map.alpha = 0x33FFFFFF
-						settings.map.alphastring = "20%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "15%",
-					onclick = function()
-						settings.map.alpha = 0x26FFFFFF
-						settings.map.alphastring = "15%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "10%",
-					onclick = function()
-						settings.map.alpha = 0x1AFFFFFF
-						settings.map.alphastring = "10%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "5%",
-					onclick = function()
-						settings.map.alpha = 0x0DFFFFFF
-						settings.map.alphastring = "5%"
-						inicfg.save(settings, "gmap")
-					end
-				},
-				{
-					title = "0%",
-					onclick = function()
-						settings.map.alpha = 0x00FFFFFF
-						settings.map.alphastring = "0%"
-						inicfg.save(settings, "gmap")
-					end
-				}
-			}
-		},
-		{
-			title = "Показывать карту на {7ef3fa}" .. key.id_to_name(settings.map.key1).."{ffffff} и {7ef3fa}" .. key.id_to_name(settings.map.key2).."{ffffff}: " .. tostring(settings.map.show),
-			onclick = function()
-				settings.map.show = not settings.map.show
-				inicfg.save(settings, "gmap")
-			end
-		},
-		{
-			title = "Скрывать мои координаты: " .. tostring(settings.map.hide),
-			onclick = function()
-				settings.map.hide = not settings.map.hide
-				inicfg.save(settings, "gmap")
-			end
-		},
-		{
-			title = "Переключать вместо удержания: " .. tostring(settings.map.toggle),
-			onclick = function()
-				settings.map.toggle = not settings.map.toggle
-				inicfg.save(settings, "gmap")
-			end
-		},
-		{
-			title = " "
-		},
-		{
-			title = "Включить рендер: " .. tostring(settings.map.render_pos),
-			onclick = function()
-				settings.map.render_pos = not settings.map.render_pos
-				inicfg.save(settings, "gmap")
-			end
-		},
-		{
-			title = "Клавиша рендера - {7ef3fa}" .. key.id_to_name(settings.map.render_key),
-			onclick = function()
-				lua_thread.create(changemaphotkey, 4)
-			end
-		},
-		{
-			title = "Тогл вместо удержания: " .. tostring(settings.map.toggle_render),
-			onclick = function()
-				settings.map.toggle_render = not settings.map.toggle_render
-				active_render = false
-				inicfg.save(settings, "gmap")
-			end
-		},
+    {
+      title = "Изменить клавиши активации",
+      submenu = {
+        {
+          title = "Открыть большую карту - {7ef3fa}" .. key.id_to_name(settings.map.key1),
+          onclick = function()
+            lua_thread.create(changemaphotkey, 1)
+          end
+        },
+        {
+          title = "Открыть 1/4 карты - {7ef3fa}" .. key.id_to_name(settings.map.key2),
+          onclick = function()
+            lua_thread.create(changemaphotkey, 2)
+          end
+        },
+        {
+          title = "Сменить режим 1/4 карты- {7ef3fa}" .. key.id_to_name(settings.map.key3),
+          onclick = function()
+            lua_thread.create(changemaphotkey, 3)
+          end
+        }
+      }
+    },
+    {
+      title = " "
+    },
+    {
+      title = "Прозрачность: " .. tostring(settings.map.alphastring),
+      submenu = {
+        {
+          title = "100%",
+          onclick = function()
+            settings.map.alpha = 0xFFFFFFFF
+            settings.map.alphastring = "100%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "95%",
+          onclick = function()
+            settings.map.alpha = 0xF2FFFFFF
+            settings.map.alphastring = "95%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "90%",
+          onclick = function()
+            settings.map.alpha = 0xE6FFFFFF
+            settings.map.alphastring = "90%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "85%",
+          onclick = function()
+            settings.map.alpha = 0xD9FFFFFF
+            settings.map.alphastring = "85%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "80%",
+          onclick = function()
+            settings.map.alpha = 0xCCFFFFFF
+            settings.map.alphastring = "80%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "75%",
+          onclick = function()
+            settings.map.alpha = 0xBFFFFFFF
+            settings.map.alphastring = "75%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "70%",
+          onclick = function()
+            settings.map.alpha = 0xB3FFFFFF
+            settings.map.alphastring = "70%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "65%",
+          onclick = function()
+            settings.map.alpha = 0xA6FFFFFF
+            settings.map.alphastring = "65%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "60%",
+          onclick = function()
+            settings.map.alpha = 0x99FFFFFF
+            settings.map.alphastring = "60%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "55%",
+          onclick = function()
+            settings.map.alpha = 0x8CFFFFFF
+            settings.map.alphastring = "55%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "50%",
+          onclick = function()
+            settings.map.alpha = 0x80FFFFFF
+            settings.map.alphastring = "50%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "45%",
+          onclick = function()
+            settings.map.alpha = 0x73FFFFFF
+            settings.map.alphastring = "45%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "40%",
+          onclick = function()
+            settings.map.alpha = 0x66FFFFFF
+            settings.map.alphastring = "40%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "35%",
+          onclick = function()
+            settings.map.alpha = 0x59FFFFFF
+            settings.map.alphastring = "35%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "30%",
+          onclick = function()
+            settings.map.alpha = 0x4DFFFFFF
+            settings.map.alphastring = "30%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "25%",
+          onclick = function()
+            settings.map.alpha = 0x40FFFFFF
+            settings.map.alphastring = "25%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "20%",
+          onclick = function()
+            settings.map.alpha = 0x33FFFFFF
+            settings.map.alphastring = "20%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "15%",
+          onclick = function()
+            settings.map.alpha = 0x26FFFFFF
+            settings.map.alphastring = "15%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "10%",
+          onclick = function()
+            settings.map.alpha = 0x1AFFFFFF
+            settings.map.alphastring = "10%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "5%",
+          onclick = function()
+            settings.map.alpha = 0x0DFFFFFF
+            settings.map.alphastring = "5%"
+            inicfg.save(settings, "gmap")
+          end
+        },
+        {
+          title = "0%",
+          onclick = function()
+            settings.map.alpha = 0x00FFFFFF
+            settings.map.alphastring = "0%"
+            inicfg.save(settings, "gmap")
+          end
+        }
+      }
+    },
+    {
+      title = "Показывать карту на {7ef3fa}" .. key.id_to_name(settings.map.key1).."{ffffff} и {7ef3fa}" .. key.id_to_name(settings.map.key2).."{ffffff}: " .. tostring(settings.map.show),
+      onclick = function()
+        settings.map.show = not settings.map.show
+        inicfg.save(settings, "gmap")
+      end
+    },
+    {
+      title = "Скрывать мои координаты: " .. tostring(settings.map.hide),
+      onclick = function()
+        settings.map.hide = not settings.map.hide
+        inicfg.save(settings, "gmap")
+      end
+    },
+    {
+      title = "Переключать вместо удержания: " .. tostring(settings.map.toggle),
+      onclick = function()
+        settings.map.toggle = not settings.map.toggle
+        inicfg.save(settings, "gmap")
+      end
+    },
+    {
+      title = " "
+    },
+    {
+      title = "Включить рендер: " .. tostring(settings.map.render_pos),
+      onclick = function()
+        settings.map.render_pos = not settings.map.render_pos
+        inicfg.save(settings, "gmap")
+      end
+    },
+    {
+      title = "Клавиша рендера - {7ef3fa}" .. key.id_to_name(settings.map.render_key),
+      onclick = function()
+        lua_thread.create(changemaphotkey, 4)
+      end
+    },
+    {
+      title = "Тогл вместо удержания: " .. tostring(settings.map.toggle_render),
+      onclick = function()
+        settings.map.toggle_render = not settings.map.toggle_render
+        active_render = false
+        inicfg.save(settings, "gmap")
+      end
+    },
     {
       title = " "
     },
@@ -1227,12 +1226,12 @@ function updateMenu()
         os.execute('explorer "https://github.com/qrlk/gmap"')
       end
     },
-		{
-			title = '{808080}>>{ffffff} qrlk',
-			onclick = function()
-				os.execute('explorer "http://qrlk.me"')
-			end
-		},
+    {
+      title = '{808080}>>{ffffff} qrlk',
+      onclick = function()
+        os.execute('explorer "http://qrlk.me"')
+      end
+    },
   }
 end
 

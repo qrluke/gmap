@@ -24,7 +24,7 @@ This helps small groups of players (squads, families) to better coordinate on th
 
 More info **[here](https://www.blast.hk/threads/-/)** (in Russian).
 
-It requires **[CLEO 4+](http://cleo.li/?lang=ru)**, **[SAMPFUNCS 5+](https://blast.hk/threads/17/)** and **[SAMP.Lua](https://github.com/THE-FYP/SAMP.Lua)**.
+It requires **[CLEO 4+](http://cleo.li/?lang=ru)** and **[SAMPFUNCS 5+](https://blast.hk/threads/17/)**.
 
 P.S. MoonLoader v.027.0-preview3 recommended for better networking ([download](https://www.blast.hk/threads/13305/post-386466)).
 
