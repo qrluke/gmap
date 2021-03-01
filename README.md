@@ -12,7 +12,7 @@
 
 <img src="https://img.shields.io/badge/dynamic/json?color=blueviolet&label=users%20%28all%20time%29&query=result&url=http%3A%2F%2Fqrlk.me%2Fdev%2Fmoonloader%2Fusers_all.php%3Fscript%3Dgmap">
 
-<img src="https://img.shields.io/date/1614590942?label=released" >
+<img src="https://img.shields.io/date/1614596538?label=released" >
 
 </p>
 
@@ -29,5 +29,5 @@ It requires **[CLEO 4+](http://cleo.li/?lang=ru)** and **[SAMPFUNCS 5+](https://
 P.S. MoonLoader v.027.0-preview3 recommended for better networking ([download](https://www.blast.hk/threads/13305/post-386466)).
 
 ## Links
-* [BlastHack V2](https://www.blast.hk/threads/-/)
+* [BlastHack V2](https://www.blast.hk/threads/80532/)
 * [BlastHack V1](https://www.blast.hk/threads/42106/)
