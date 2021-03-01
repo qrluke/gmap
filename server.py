@@ -1,121 +1,91 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-from websocket_server import WebsocketServer
-import json
+#!/usr/bin/env python3
+import sys
+from sanic import Sanic
+from sanic.response import json
+from sanic_limiter import Limiter
+from sanic.response import text
+from sanic.exceptions import NotFound
+from datetime import datetime
+import json as js
 import time
-import io
-nicks = {}
-vehicles = {}
-capture = {}
+import urllib.parse
+
+try:
+    sys.argv[1]
+    int(sys.argv[1])
+except IndexError:
+    print("usage: python3 server3.py [DELAY (MS)]")
+    sys.exit(0)
+
+DELAY = int(sys.argv[1])
+
+data = {}
 
 
-# Called for every client connecting (after handshake)
-
-def new_client(client, server):
-    print('Client connected')
+def get_remote_address(request):
+    return request.ip
 
 
-# Called for every client disconnecting
+app = Sanic()
+limiter = Limiter(app, global_limits=['1 per hour', '10 per day'], key_func=get_remote_address)
 
-def client_left(client, server):
-    print('Client(%d) disconnected' % client['id'])
+last_clear = 0
 
+@limiter.limit("5000/minute")
+@app.exception(NotFound)
+async def test(request, exception):
+    global last_clear
+    start = time.time()
 
-# Called when a client sends a message
+    info = js.loads(urllib.parse.unquote(request.path).replace("/", ""))
+    ip = info["info"]["server"]
+    room = info["info"]["room"]
 
-def message_received(client, server, message):
-    info = json.loads(message)
-    if 'auth' in info:
-        with io.open('whitelist.txt') as file:
-            for line in file:
-                if info['auth'] in line:
-                    server.send_message(client, 'Granted!')
-                    return
-        server.send_message(client, 'Go away!')
+    if ip not in data:
+        data[ip] = {}
+    if room not in data[ip]:
+        data[ip][room] = {}
+        data[ip][room]["players"] = {}
+
+    if time.time() - last_clear > 300:
+        last_clear = time.time()
+        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S || ')}[{ip}]: Запускаю очистку")
+        for check_room in data[ip]:
+            del_list = []
+            for k, v in data[ip][check_room]["players"].items():
+                if int(time.time()) - v["timestamp"] > 300:
+                    del_list.append(k)
+                    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S || ')}[{ip} | {check_room}]: {k} будет удалён.")
+            for item in del_list:
+                del data[ip][check_room][item]
+                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S || ')}[{ip} | {check_room}]: Игрок {k} удален")
+
+    if "sender" in info["data"]:
+        data[ip][room]["players"].update({info["data"]['sender']['sender']: {
+            'timestamp': time.time(),
+            'heading': info["data"]['sender']['heading'],
+            'health': info["data"]['sender']['health'],
+            'x': info["data"]['sender']['pos']['x'],
+            'y': info["data"]['sender']['pos']['y'],
+            'z': info["data"]['sender']['pos']['z'],
+        }})
+
+    answer = {}
+
+    answer["timestamp"] = time.time()
+    answer["active"] = len(data[ip][room]["players"])
+    answer["delay"] = DELAY
+
+    if info["data"]['request'] == 1:
+        answer["nicks"] = data[ip][room]["players"]
+
+    if "sender" in info["data"]:
+        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f || ')}[{ip} | {room}]: Подготовлен ответ для {info['data']['sender']['sender']}. Обработка заняла: {(time.time() - start):.6f} с")
     else:
-        if 'sender' in info:
-            if info['sender']['sender'] not in nicks:
-                nicks.update({info['sender']['sender']: {
-                    'timestamp': time.time(),
-                    'heading': info['sender']['heading'],
-                    'health': info['sender']['health'],
-                    'x': info['sender']['pos']['x'],
-                    'y': info['sender']['pos']['y'],
-                    'z': info['sender']['pos']['z'],
-                    }})
-            else:
-                if nicks[info['sender']['sender']]['timestamp'] \
-                    < time.time():
-                    nicks.update({info['sender']['sender']: {
-                        'timestamp': time.time(),
-                        'heading': info['sender']['heading'],
-                        'health': info['sender']['health'],
-                        'x': info['sender']['pos']['x'],
-                        'y': info['sender']['pos']['y'],
-                        'z': info['sender']['pos']['z'],
-                        }})
-        if 'vehicles' in info:
-            inf = info['vehicles']
-            for a in inf:
-                if a and a['id'] not in vehicles:
-                    if 'health' in a:
-                        vehicles.update({a['id']: {
-                            'timestamp': time.time(),
-                            'heading': a['heading'],
-                            'engine': a['engine'],
-                            'health': a['health'],
-                            'healthstamp': time.time(),
-                            'x': a['pos']['x'],
-                            'y': a['pos']['y'],
-                            'z': a['pos']['z'],
-                            }})
-                    else:
-                        vehicles.update({a['id']: {
-                            'timestamp': time.time(),
-                            'heading': a['heading'],
-                            'engine': a['engine'],
-                            'x': a['pos']['x'],
-                            'health': 'xz',
-                            'healthstamp': time.time(),
-                            'y': a['pos']['y'],
-                            'z': a['pos']['z'],
-                            }})
-                else:
-                    if vehicles[a['id']]['timestamp'] < time.time():
-                        if 'health' in a:
-                            vehicles.update({a['id']: {
-                                'timestamp': time.time(),
-                                'heading': a['heading'],
-                                'engine': a['engine'],
-                                'health': a['health'],
-                                'healthstamp': time.time(),
-                                'x': a['pos']['x'],
-                                'y': a['pos']['y'],
-                                'z': a['pos']['z'],
-                                }})
-                        else:
-                            vehicles.update({a['id']: {
-                                'timestamp': time.time(),
-                                'heading': a['heading'],
-                                'engine': a['engine'],
-                                'health': vehicles[a['id']]['health'],
-                                'healthstamp': vehicles[a['id'
-                                        ]]['healthstamp'],
-                                'x': a['pos']['x'],
-                                'y': a['pos']['y'],
-                                'z': a['pos']['z'],
-                                }})
-        answer = {}
-        answer['nicks'] = nicks
-        answer['vehicles'] = vehicles
-        answer['timestamp'] = time.time()
-        server.send_message(client, str.encode(json.dumps(answer)))
-        print ('Client(%d) said: %s' % (client['id'], message))
+        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f || ')}[{ip} | {room}]: Отправлена информация о комнате. Обработка заняла: {(time.time() - start):.6f} с")
+
+    return json(answer)
 
 
-PORT = 9128
-server = WebsocketServer(PORT, '0.0.0.0')
-server.set_fn_new_client(new_client)
-server.set_fn_client_left(client_left)
-server.set_fn_message_received(message_received)
-server.run_forever()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=40001, access_log = True)
