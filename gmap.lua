@@ -6,7 +6,7 @@ script_description("Обмен координатами через сервер.")
 
 --[[ИЗМЕНИТЬ]]
 local ip = 'http://gmap.qrlk.me:40001/' -- ЗДЕСЬ СЕРВЕР server.py
-local json_update_link = "http://qrlk.me/dev/moonloader/!edith/version.json" --автообновление, должен возвращать json
+local json_update_link = "http://qrlk.me/dev/moonloader/gmap/stats.php" --автообновление, должен возвращать json
 --[[ИЗМЕНИТЬ]]
 
 if getMoonloaderVersion() >= 27 then
