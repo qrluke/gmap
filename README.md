@@ -22,7 +22,7 @@ The coordinates can be displayed on an overlay map or on 3d coordinates converte
 
 This helps small groups of players (squads, families) to better coordinate on the large map of gta sa. 
 
-More info **[here](https://www.blast.hk/threads/-/)** (in Russian).
+More info **[here](https://www.blast.hk/threads/80532/)** (in Russian).
 
 It requires **[CLEO 4+](http://cleo.li/?lang=ru)** and **[SAMPFUNCS 5+](https://blast.hk/threads/17/)**.
 
