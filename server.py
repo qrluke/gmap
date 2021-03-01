@@ -57,7 +57,7 @@ async def test(request, exception):
                     del_list.append(k)
                     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S || ')}[{ip} | {check_room}]: {k} будет удалён.")
             for item in del_list:
-                del data[ip][check_room][item]
+                del data[ip][check_room]["players"][item]
                 print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S || ')}[{ip} | {check_room}]: Игрок {k} удален")
 
     if "sender" in info["data"]:
