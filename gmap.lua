@@ -1,6 +1,6 @@
 script_name("gmap")
 script_author("qrlk")
-script_version("01.03.2021")
+script_version("28.03.2021")
 script_url("https://github.com/qrlk/gmap")
 script_description("Обмен координатами через сервер.")
 
@@ -155,6 +155,18 @@ function main()
     end
   )
 
+  sampRegisterChatCommand(
+    "gmappp",
+    function()
+      lua_thread.create(
+        function()
+          updateMenu()
+          submenus_show(mod_submenus_sa, "{7ef3fa}GMAP {00ccff}v" .. thisScript().version, "Выбрать", "Закрыть", "Назад")
+        end
+      )
+    end
+  )
+
   mapmode = 1
   modX = 2
   modY = 2
@@ -201,7 +213,7 @@ function main()
     sampAddChatMessage(
       "GMAP {00ccff}v" ..
       thisScript().version ..
-      "{7ef3fa} loaded. Подробная информация: {00ccff}/gmap{7ef3fa}. Автор: {00ccff}qrlk{7ef3fa}.",
+      "{7ef3fa} loaded. Подробная информация: {00ccff}/gmap{7ef3fa} или {00ccff}/gmappp{7ef3fa}. Автор: {00ccff}qrlk{7ef3fa}.",
       0x7ef3fa
     )
 
