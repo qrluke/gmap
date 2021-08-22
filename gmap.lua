@@ -1,3 +1,5 @@
+require 'lib.moonloader'
+
 script_name("gmap")
 script_author("qrlk")
 script_version("28.03.2021")
