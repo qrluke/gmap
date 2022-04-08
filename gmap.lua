@@ -21,7 +21,8 @@ if getMoonloaderVersion() >= 27 then
   local copas = require 'copas'
   local http = require 'copas.http'
 
-  function httpRequest(request, body, handler) -- copas.http
+  function httpRequest(request, body, handler)
+    -- copas.http
     -- start polling task
     if not copas.running then
       copas.running = true
@@ -29,7 +30,9 @@ if getMoonloaderVersion() >= 27 then
         wait(0)
         while not copas.finished() do
           local ok, err = copas.step(0)
-          if ok == nil then error(err) end
+          if ok == nil then
+            error(err)
+          end
           wait(0)
         end
         copas.running = false
@@ -39,16 +42,22 @@ if getMoonloaderVersion() >= 27 then
     -- do request
     if handler then
       return copas.addthread(function(r, b, h)
-        copas.setErrorHandler(function(err) h(nil, err) end)
+        copas.setErrorHandler(function(err)
+          h(nil, err)
+        end)
         h(http.request(r, b))
       end, request, body, handler)
     else
       local results
       local thread = copas.addthread(function(r, b)
-        copas.setErrorHandler(function(err) results = {nil, err} end)
+        copas.setErrorHandler(function(err)
+          results = { nil, err }
+        end)
         results = table.pack(http.request(r, b))
       end, request, body)
-      while coroutine.status(thread) ~= 'dead' do wait(0) end
+      while coroutine.status(thread) ~= 'dead' do
+        wait(0)
+      end
       return table.unpack(results)
     end
   end
@@ -81,41 +90,40 @@ local active_users = -1
 local inicfg = require "inicfg"
 local key = require("vkeys")
 local vkeys = require("vkeys")
-local ffi = require'ffi'
+local ffi = require 'ffi'
 local memory = require 'memory'
 
 local matavoz, player, font, font12, resX, resY = 0, 0, 0, 0, 0, 0
 local m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 local m1k, m2k, m3k, m4k, m5k, m6k, m7k, m8k, m9k, m10k, m11k, m12k, m13k, m14k, m15k, m16k = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-local settings =
-inicfg.load(
-  {
-    test = {
-      reloadonterminate = false,
-    },
-    welcome = {
-      show = true,
-    },
-    map = {
-      toggle = false,
-      idfura = 506 + 42,
-      sqr = false,
-      hide = false,
-      show = true,
-      alpha = 0xFFFFFFFF,
-      alphastring = "100%",
-      debug = false,
-      key1 = 77,
-      key2 = 188,
-      key3 = 0x4B,
-      render_pos = true,
-      render_key = 0x5A,
-      toggle_render = false,
-      room = ""
-    },
-  },
-  "gmap"
+local settings = inicfg.load(
+        {
+          test = {
+            reloadonterminate = false,
+          },
+          welcome = {
+            show = true,
+          },
+          map = {
+            toggle = false,
+            idfura = 506 + 42,
+            sqr = false,
+            hide = false,
+            show = true,
+            alpha = 0xFFFFFFFF,
+            alphastring = "100%",
+            debug = false,
+            key1 = 77,
+            key2 = 188,
+            key3 = 0x4B,
+            render_pos = true,
+            render_key = 0x5A,
+            toggle_render = false,
+            room = ""
+          },
+        },
+        "gmap"
 )
 
 local ad = {}
@@ -142,38 +150,38 @@ function main()
   end
 
   update(
-    json_update_link,
-    "[" .. string.upper(thisScript().name) .. "]: ",
-    "http://qrlk.me/sampvk",
-    "gmaplog"
+          json_update_link,
+          "[" .. string.upper(thisScript().name) .. "]: ",
+          "http://qrlk.me/sampvk",
+          "gmaplog"
   )
 
   openchangelog("gmaplog", "-")
 
   sampRegisterChatCommand(
-    "gmap",
-    function()
-      table.insert(tempThreads, lua_thread.create(
-        function()
-          updateMenu()
-          submenus_show(mod_submenus_sa, "{7ef3fa}GMAP {00ccff}v" .. thisScript().version, "Выбрать", "Закрыть", "Назад")
-        end
-      )
-      )
-    end
+          "gmap",
+          function()
+            table.insert(tempThreads, lua_thread.create(
+                    function()
+                      updateMenu()
+                      submenus_show(mod_submenus_sa, "{7ef3fa}GMAP {00ccff}v" .. thisScript().version, "Выбрать", "Закрыть", "Назад")
+                    end
+            )
+            )
+          end
   )
 
   sampRegisterChatCommand(
-    "gmappp",
-    function()
-      table.insert(tempThreads, lua_thread.create(
-        function()
-          updateMenu()
-          submenus_show(mod_submenus_sa, "{7ef3fa}GMAP {00ccff}v" .. thisScript().version, "Выбрать", "Закрыть", "Назад")
-        end
-      )
-      )
-    end
+          "gmappp",
+          function()
+            table.insert(tempThreads, lua_thread.create(
+                    function()
+                      updateMenu()
+                      submenus_show(mod_submenus_sa, "{7ef3fa}GMAP {00ccff}v" .. thisScript().version, "Выбрать", "Закрыть", "Назад")
+                    end
+            )
+            )
+          end
   )
 
   mapmode = 1
@@ -192,42 +200,44 @@ function main()
     licensenick = sampGetPlayerNickname(licenseid)
     if getMoonloaderVersion() <= 26 then
       sampAddChatMessage(
-        "{7ef3fa}>>> {ff0000}Внимание! У вас стоит moonloader v" ..
-        getMoonloaderVersion() ..
-        ", на котором GMAP может работать нестабильно.",
-        0xff0000
+              "{7ef3fa}>>> {ff0000}Внимание! У вас стоит moonloader v" ..
+                      getMoonloaderVersion() ..
+                      ", на котором GMAP может работать нестабильно.",
+              0xff0000
       )
       sampAddChatMessage(
-        "{7ef3fa}>>> {ff0000}Введите {00ccff}/moonupdate{ff0000}, чтобы узнать как и зачем обновиться до тестовой версии муна.",
-        0xff0000
+              "{7ef3fa}>>> {ff0000}Введите {00ccff}/moonupdate{ff0000}, чтобы узнать как и зачем обновиться до тестовой версии муна.",
+              0xff0000
       )
 
       sampRegisterChatCommand("moonupdate",
-        function()
-          table.insert(tempThreads, lua_thread.create(
-            function()
-              local string = "GMAP работает через регулярные запросы к серверу, которые на v"..getMoonloaderVersion().." реализовать сложно.\nВ v27 появилась возможность быстро скачивать нужные для нормальной работы с сетью библиотеки.\nПомимо этого, было пофикшено много других проблем, вроде вылета в момент скачивания муном файла.\n\nОбновление для муна ещё не вышло, есть только предварительная версия.\nСтоит её попробовать, но если будут проблемы, лучше откатиться.\n\nДля этого нужно сделать следующее:\n  1. Сделайте копию папки с игрой. На всякий случай. Никаких претензий.\n  2. Нажмите скачать (ентер).\n  3. В браузере должна открыться ссылка 'https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip'.\n  4. Выйдите из игры.\n  5. Распакуйте архив в папку с игрой с заменой.\n  6. При запуске игры одобрите edith скачивание библиотек для сети.\n  7. Наслаждайтесь стабильной работой скрипта.\n\nP.S. На v26 скрипт всё ещё будет работать, но все претензии будут игнорироваться."
-              sampShowDialog(912, "Обновление до v.027.0-preview3", string, "Скачать", "Отмена", 0)
-              while sampIsDialogActive() do wait(100) end
-              local result, button, list, input = sampHasDialogRespond(912)
-              if button == 1 then
-                os.execute('explorer "https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip"')
+              function()
+                table.insert(tempThreads, lua_thread.create(
+                        function()
+                          local string = "GMAP работает через регулярные запросы к серверу, которые на v" .. getMoonloaderVersion() .. " реализовать сложно.\nВ v27 появилась возможность быстро скачивать нужные для нормальной работы с сетью библиотеки.\nПомимо этого, было пофикшено много других проблем, вроде вылета в момент скачивания муном файла.\n\nОбновление для муна ещё не вышло, есть только предварительная версия.\nСтоит её попробовать, но если будут проблемы, лучше откатиться.\n\nДля этого нужно сделать следующее:\n  1. Сделайте копию папки с игрой. На всякий случай. Никаких претензий.\n  2. Нажмите скачать (ентер).\n  3. В браузере должна открыться ссылка 'https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip'.\n  4. Выйдите из игры.\n  5. Распакуйте архив в папку с игрой с заменой.\n  6. При запуске игры одобрите edith скачивание библиотек для сети.\n  7. Наслаждайтесь стабильной работой скрипта.\n\nP.S. На v26 скрипт всё ещё будет работать, но все претензии будут игнорироваться."
+                          sampShowDialog(912, "Обновление до v.027.0-preview3", string, "Скачать", "Отмена", 0)
+                          while sampIsDialogActive() do
+                            wait(100)
+                          end
+                          local result, button, list, input = sampHasDialogRespond(912)
+                          if button == 1 then
+                            os.execute('explorer "https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip"')
+                          end
+                        end
+                )
+                )
               end
-            end
-          )
-          )
-        end
       )
     end
 
     sampAddChatMessage(
-      "GMAP {00ccff}v" ..
-      thisScript().version ..
-      "{7ef3fa} loaded. Подробная информация: {00ccff}/gmap{7ef3fa} или {00ccff}/gmappp{7ef3fa}. Автор: {00ccff}qrlk{7ef3fa}.",
-      0x7ef3fa
+            "GMAP {00ccff}v" ..
+                    thisScript().version ..
+                    "{7ef3fa} loaded. Подробная информация: {00ccff}/gmap{7ef3fa} или {00ccff}/gmappp{7ef3fa}. Автор: {00ccff}qrlk{7ef3fa}.",
+            0x7ef3fa
     )
 
-    sampAddChatMessage("{ffa500}>>>{ffffff} Открыть карту - {00ccff}"..tostring(key.id_to_name(settings.map.key1)).."{ffffff}, 1/4 - {00ccff}"..tostring(key.id_to_name(settings.map.key2)).."{ffffff}, режим 1/4 - {00ccff}"..tostring(key.id_to_name(settings.map.key3)).."{ffffff}, рендер - {00ccff}"..tostring(key.id_to_name(settings.map.render_key)).."{ffa500} <<<", 0x7ef3fa)
+    sampAddChatMessage("{ffa500}>>>{ffffff} Открыть карту - {00ccff}" .. tostring(key.id_to_name(settings.map.key1)) .. "{ffffff}, 1/4 - {00ccff}" .. tostring(key.id_to_name(settings.map.key2)) .. "{ffffff}, режим 1/4 - {00ccff}" .. tostring(key.id_to_name(settings.map.key3)) .. "{ffffff}, рендер - {00ccff}" .. tostring(key.id_to_name(settings.map.render_key)) .. "{ffa500} <<<", 0x7ef3fa)
 
     if settings.map.room == "" then
       sampAddChatMessage("{7ef3fa}GMAP {ffa500}>>> {ff0000}Код комнаты не установлен {ffa500} >>> {ff0000} Введите {00ccff}/groom{ff0000} или {00ccff}/groom [код]{ff0000}!", 0xff0000)
@@ -237,48 +247,48 @@ function main()
   table.insert(threads, lua_thread.create(viewer))
 
   sampRegisterChatCommand("groom",
-    function(param)
-      lua_thread.create(
-        function(param)
-          if param ~= "" then
-            settings.map.room = param
-            wait(200)
-            chat_active = true
-            inicfg.save(settings, "gmap")
-          else
-            sampShowDialog(
-              9827,
-              "GMAP - Смена комнаты",
-              string.format("Введите код комнаты, чтобы вы и ваши товарищи могли видеть друг друга.\nСохраните пустую строку, чтобы отключить передатчик.\n\n/groom [код] сразу установит код.\n\nТекущий код комнаты: %s, активных людей в комнате: %s.\n/groomcopy - скопировать код в буфер обмена.", settings.map.room, active_users),
-              "Сохранить",
-              "Отмена",
-              1
+          function(param)
+            lua_thread.create(
+                    function(param)
+                      if param ~= "" then
+                        settings.map.room = param
+                        wait(200)
+                        chat_active = true
+                        inicfg.save(settings, "gmap")
+                      else
+                        sampShowDialog(
+                                9827,
+                                "GMAP - Смена комнаты",
+                                string.format("Введите код комнаты, чтобы вы и ваши товарищи могли видеть друг друга.\nСохраните пустую строку, чтобы отключить передатчик.\n\n/groom [код] сразу установит код.\n\nТекущий код комнаты: %s, активных людей в комнате: %s.\n/groomcopy - скопировать код в буфер обмена.", settings.map.room, active_users),
+                                "Сохранить",
+                                "Отмена",
+                                1
+                        )
+                        while sampIsDialogActive() do
+                          wait(100)
+                        end
+                        local result, button, list, input = sampHasDialogRespond(9827)
+                        if button == 1 then
+                          settings.map.room = sampGetCurrentDialogEditboxText(9827)
+                          if settings.map.room ~= "" then
+                            wait(200)
+                            chat_active = true
+                          else
+                            active_users = -1
+                          end
+                          inicfg.save(settings, "gmap")
+                        end
+                      end
+                    end
+            , param
             )
-            while sampIsDialogActive() do
-              wait(100)
-            end
-            local result, button, list, input = sampHasDialogRespond(9827)
-            if button == 1 then
-              settings.map.room = sampGetCurrentDialogEditboxText(9827)
-              if settings.map.room ~= "" then
-                wait(200)
-                chat_active = true
-              else
-                active_users = -1
-              end
-              inicfg.save(settings, "gmap")
-            end
           end
-        end
-        , param
-      )
-    end
   )
 
   sampRegisterChatCommand("groomcopy",
-    function()
-      setClipboardText(settings.map.room)
-    end
+          function()
+            setClipboardText(settings.map.room)
+          end
   )
 
   while true do
@@ -298,7 +308,6 @@ function main()
         wait(transponder_delay)
       end
 
-
       local query_start = os.clock()
       asodkas, licenseid = sampGetPlayerIdByCharHandle(PLAYER_PED)
       licensenick = sampGetPlayerNickname(licenseid)
@@ -314,7 +323,7 @@ function main()
         local x, y, z = getCharCoordinates(playerPed)
         data["sender"] = {
           sender = licensenick,
-          pos = {x = x, y = y, z = z},
+          pos = { x = x, y = y, z = z },
           heading = getCharHeading(playerPed),
           health = getCharHealth(playerPed)
         }
@@ -336,7 +345,7 @@ function main()
         query_start_r = os.clock()
         local query_send_start = os.clock()
         collectgarbage("stop")
-        local response, code = httpRequest(ip .. encodeJson({data = data, random = os.clock(), info = {room = settings.map.room, server = sampGetCurrentServerAddress()}}, true))
+        local response, code = httpRequest(ip .. encodeJson({ data = data, random = os.clock(), info = { room = settings.map.room, server = sampGetCurrentServerAddress() } }, true))
         collectgarbage("restart")
         query_send_end = os.clock()
         query_end_r = os.clock()
@@ -349,8 +358,8 @@ function main()
                 print(1)
 
                 sampAddChatMessage(
-                  "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
-                  0xff0000
+                        "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
+                        0xff0000
                 )
               end
               do_not_reload = true
@@ -371,10 +380,10 @@ function main()
               active_users = ad["active"]
               if chat_active then
                 sampAddChatMessage(
-                  "GMAP {ffffff}>>>{7ef3fa} Игроков в комнате: {00ccff}" ..
-                  active_users ..
-                  "{7ef3fa} {ffffff}>>>{7ef3fa} Сменить комнату: {00ccff}/groom{7ef3fa}.",
-                  0x7ef3fa
+                        "GMAP {ffffff}>>>{7ef3fa} Игроков в комнате: {00ccff}" ..
+                                active_users ..
+                                "{7ef3fa} {ffffff}>>>{7ef3fa} Сменить комнату: {00ccff}/groom{7ef3fa}.",
+                        0x7ef3fa
                 )
                 chat_active = false
               end
@@ -387,8 +396,8 @@ function main()
               print(2)
 
               sampAddChatMessage(
-                "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
-                0xff0000
+                      "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
+                      0xff0000
               )
             end
             do_not_reload = true
@@ -404,8 +413,8 @@ function main()
               print(3)
 
               sampAddChatMessage(
-                "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
-                0xff0000
+                      "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
+                      0xff0000
               )
             end
             do_not_reload = true
@@ -421,16 +430,16 @@ function main()
         query_start_r = os.clock()
         local query_send_start = os.clock()
         downloadUrlToFile(
-          ip .. encodeJson({data = data, random = os.clock(), info = {room = settings.map.room, server = sampGetCurrentServerAddress()}}),
-          response_path,
-          function(id, status, p1, p2)
-            if status == dlstatus.STATUS_ENDDOWNLOADDATA then
-              down = true
-            end
-            if status == dlstatus.STATUSEX_ENDDOWNLOAD then
-              wait_for_response = false
-            end
-          end
+                ip .. encodeJson({ data = data, random = os.clock(), info = { room = settings.map.room, server = sampGetCurrentServerAddress() } }),
+                response_path,
+                function(id, status, p1, p2)
+                  if status == dlstatus.STATUS_ENDDOWNLOADDATA then
+                    down = true
+                  end
+                  if status == dlstatus.STATUSEX_ENDDOWNLOAD then
+                    wait_for_response = false
+                  end
+                end
         )
         query_send_end = os.clock()
         while wait_for_response do
@@ -447,8 +456,8 @@ function main()
               if settings.welcome.show then
                 print(4)
                 sampAddChatMessage(
-                  "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
-                  0xff0000
+                        "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
+                        0xff0000
                 )
               end
               do_not_reload = true
@@ -477,8 +486,8 @@ function main()
           if settings.welcome.show then
             print(1)
             sampAddChatMessage(
-              "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
-              0xff0000
+                    "{7ef3fa}[GMAP]: {ff0000}Соединение потеряно. Попробуйте перезапустить скрипт: CTRL + R.",
+                    0xff0000
             )
           end
           do_not_reload = true
@@ -491,18 +500,18 @@ function main()
       local result_next = os.clock()
       if settings.map.debug then
         print(
-          string.format(
-            "Запрос занял %s сек.\nПотрачено на cбор данных: %s. О сендере: %s. О машинах: %s\nПотрачено на отправку: %s\nПотрачено сервером на обработку: %s\nПотрачено на обработку результата: %s\nПотрачено на очищение таблиц: %s\nПотрачено на копирование таблиц: %s",
-            result_next - query_start,
-            query_end_f - query_start_s,
-            query_end_s - query_start_s,
-            query_end_v - query_start_v,
-            query_send_end - query_send_start,
-            query_end_r - query_start_r,
-            result_next - query_end_r,
-            result_end_clear - result_start_clear,
-            query_end_copy - query_start_copy
-          )
+                string.format(
+                        "Запрос занял %s сек.\nПотрачено на cбор данных: %s. О сендере: %s. О машинах: %s\nПотрачено на отправку: %s\nПотрачено сервером на обработку: %s\nПотрачено на обработку результата: %s\nПотрачено на очищение таблиц: %s\nПотрачено на копирование таблиц: %s",
+                        result_next - query_start,
+                        query_end_f - query_start_s,
+                        query_end_s - query_start_s,
+                        query_end_v - query_start_v,
+                        query_send_end - query_send_start,
+                        query_end_r - query_start_r,
+                        result_next - query_end_r,
+                        result_end_clear - result_start_clear,
+                        query_end_copy - query_start_copy
+                )
         )
       end
     end
@@ -531,7 +540,7 @@ end
 function kvadrat()
   local X, Y = getCharCoordinates(playerPed)
   X = math.ceil((X + 3000) / 250)
-  Y = math.ceil((Y * - 1 + 3000) / 250)
+  Y = math.ceil((Y * -1 + 3000) / 250)
   return X, Y
 end
 
@@ -566,12 +575,11 @@ function kvadrat1(X, Y)
   if X < 10 then
     X = "0" .. tostring(X)
   end
-  Y = math.ceil((Y * - 1 + 3000) / 250)
+  Y = math.ceil((Y * -1 + 3000) / 250)
   Y = KV[Y]
   local KVX = (Y .. "-" .. X)
   return KVX
 end
-
 
 function viewer()
   while true do
@@ -606,7 +614,7 @@ function fastmap()
   end
   if
   not sampIsChatInputActive() and not isSampfuncsConsoleActive() and not sampIsDialogActive() and (settings.map.toggle and active) or
-  (settings.map.toggle == false and not sampIsChatInputActive() and not isSampfuncsConsoleActive() and not sampIsDialogActive() and (isKeyDown(settings.map.key1) or isKeyDown(settings.map.key2)))
+          (settings.map.toggle == false and not sampIsChatInputActive() and not isSampfuncsConsoleActive() and not sampIsDialogActive() and (isKeyDown(settings.map.key1) or isKeyDown(settings.map.key2)))
   then
     if isKeyDown(settings.map.key1) then
       mapmode = 0
@@ -789,7 +797,7 @@ function fastmap()
     end
 
     if getQ(x, y, mapmode) or mapmode == 0 then
-      renderDrawTexture(player, getX(x), getY(y), iconsize, iconsize, - getCharHeading(playerPed), - 1)
+      renderDrawTexture(player, getX(x), getY(y), iconsize, iconsize, -getCharHeading(playerPed), -1)
     end
 
     if ad ~= nil then
@@ -813,7 +821,7 @@ function fastmap()
                       renderFontDrawText(font12, z, getX(v1["x"]) - string.len(z) * 8.3, getY(v1["y"]) + 4, 0xFF00FF00)
                     end
                   end
-                  renderDrawTexture(player, getX(v1["x"]), getY(v1["y"]), iconsize, iconsize, - v1["heading"], - 1)
+                  renderDrawTexture(player, getX(v1["x"]), getY(v1["y"]), iconsize, iconsize, -v1["heading"], -1)
                 end
               end
             end
@@ -840,12 +848,12 @@ function renderpos()
               if wposZ > 0 then
                 local id = sampGetPlayerIdByNickname(z)
                 local text = table.concat({
-                  table.concat({z, "["..tostring(id).."]"}, " "),
-                  table.concat({"Health: ", v1["health"], "hp"}, " "),
-                  table.concat({"Distance: ", math.floor(getDistanceBetweenCoords3d(v1["x"], v1["y"], v1["z"], xC, yC, yZ)), "м"}, " "),
+                  table.concat({ z, "[" .. tostring(id) .. "]" }, " "),
+                  table.concat({ "Health: ", v1["health"], "hp" }, " "),
+                  table.concat({ "Distance: ", math.floor(getDistanceBetweenCoords3d(v1["x"], v1["y"], v1["z"], xC, yC, yZ)), "м" }, " "),
                 }, "\n")
                 if ad["timestamp"] - v1["timestamp"] > 20 then
-                  text = text.."\nLast info: "..math.floor(ad["timestamp"] - v1["timestamp"]).."с"
+                  text = text .. "\nLast info: " .. math.floor(ad["timestamp"] - v1["timestamp"]) .. "с"
                 end
                 if id then
                   renderFontDrawText(font, text, wposX, wposY, 0xFF00FF00)
@@ -871,11 +879,11 @@ function changemaphotkey(mode)
 
   mode = tonumber(mode)
   sampShowDialog(
-    989,
-    "Изменение горячей клавиши" .. modes[mode],
-    'Нажмите "Окей", после чего нажмите нужную клавишу.\nНастройки будут изменены.',
-    "Окей",
-    "Закрыть"
+          989,
+          "Изменение горячей клавиши" .. modes[mode],
+          'Нажмите "Окей", после чего нажмите нужную клавишу.\nНастройки будут изменены.',
+          "Окей",
+          "Закрыть"
   )
   while sampIsDialogActive(989) do
     wait(100)
@@ -898,7 +906,7 @@ function changemaphotkey(mode)
           if mode == 4 then
             settings.map.render_key = i
           end
-          sampAddChatMessage("Установлена новая горячая клавиша - " .. key.id_to_name(i), - 1)
+          sampAddChatMessage("Установлена новая горячая клавиша - " .. key.id_to_name(i), -1)
           addOneOffSound(0.0, 0.0, 0.0, 1052)
           inicfg.save(settings, "gmap")
           ke1y = 1
@@ -957,7 +965,7 @@ function updateMenu()
     "{ffffff}Вы можете включить несколько полезных твиков в разделе 'Мелкие твики'",
     "Например: заблокировать радио в игре, скрыть объявления (/ad), /gov и так далее...",
     "\n{AAAAAA}Модули",
-    "{7ef3fa}* "..((settings.map.show or not settings.map.hide) and "{00ff66}" or "{ff0000}").."GLONASS - {ffffff}Глобальная карта пользователей на {00ccff}"..tostring(key.id_to_name(settings.map.key1)).."{ffffff}, 1/4 - {00ccff}"..tostring(key.id_to_name(settings.map.key2)).."{ffffff}, режим 1/4 - {00ccff}"..tostring(key.id_to_name(settings.map.key3)).."{ffffff}, рендер - {00ccff}"..tostring(key.id_to_name(settings.map.render_key)).."{ffffff}.",
+    "{7ef3fa}* " .. ((settings.map.show or not settings.map.hide) and "{00ff66}" or "{ff0000}") .. "GLONASS - {ffffff}Глобальная карта пользователей на {00ccff}" .. tostring(key.id_to_name(settings.map.key1)) .. "{ffffff}, 1/4 - {00ccff}" .. tostring(key.id_to_name(settings.map.key2)) .. "{ffffff}, режим 1/4 - {00ccff}" .. tostring(key.id_to_name(settings.map.key3)) .. "{ffffff}, рендер - {00ccff}" .. tostring(key.id_to_name(settings.map.render_key)) .. "{ffffff}.",
 
     "\nP.S. Подробная информация и настройки в разделе каждого модуля."
   }
@@ -967,10 +975,10 @@ function updateMenu()
       title = "Информация о скрипте",
       onclick = function()
         sampShowDialog(
-          0,
-          "{7ef3fa}/gmap v." .. thisScript().version .. ' - информация о скрипте',
-          "{ffffff}Скрипт предназначен для быстрого обмена координатами.\nКоординаты передаются через сервер между теми юзерами,\nкоторые выбрали одну комнату на одном сервере.\n\n{00ff66}Команды\n{7ef3fa}/groom{ffffff} - Установить код комнаты.\n{7ef3fa}/groom [code]{ffffff} - Установить код комнаты.\n{7ef3fa}/groomcopy{ffffff} - Скопировать код комнаты.\n\n{00ff66}Хоткеи\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key1)).."{ffffff} - открыть всю карту со всеми доступными данными.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key2)).."{ffffff} - открыть 1/4 карты. Стрелками можно перемещаться по ней.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.key3)).."{ffffff} - сменить режим 1/4 карты: карта с квадратами или обычная.\n{7ef3fa}"..tostring(key.id_to_name(settings.map.render_key)).."{ffffff} - рендер игроков на экране.",
-          "Окей"
+                0,
+                "{7ef3fa}/gmap v." .. thisScript().version .. ' - информация о скрипте',
+                "{ffffff}Скрипт предназначен для быстрого обмена координатами.\nКоординаты передаются через сервер между теми юзерами,\nкоторые выбрали одну комнату на одном сервере.\n\n{00ff66}Команды\n{7ef3fa}/groom{ffffff} - Установить код комнаты.\n{7ef3fa}/groom [code]{ffffff} - Установить код комнаты.\n{7ef3fa}/groomcopy{ffffff} - Скопировать код комнаты.\n\n{00ff66}Хоткеи\n{7ef3fa}" .. tostring(key.id_to_name(settings.map.key1)) .. "{ffffff} - открыть всю карту со всеми доступными данными.\n{7ef3fa}" .. tostring(key.id_to_name(settings.map.key2)) .. "{ffffff} - открыть 1/4 карты. Стрелками можно перемещаться по ней.\n{7ef3fa}" .. tostring(key.id_to_name(settings.map.key3)) .. "{ffffff} - сменить режим 1/4 карты: карта с квадратами или обычная.\n{7ef3fa}" .. tostring(key.id_to_name(settings.map.render_key)) .. "{ffffff} - рендер игроков на экране.",
+                "Окей"
         )
       end
     },
@@ -1200,7 +1208,7 @@ function updateMenu()
       }
     },
     {
-      title = "Показывать карту на {7ef3fa}" .. key.id_to_name(settings.map.key1).."{ffffff} и {7ef3fa}" .. key.id_to_name(settings.map.key2).."{ffffff}: " .. tostring(settings.map.show),
+      title = "Показывать карту на {7ef3fa}" .. key.id_to_name(settings.map.key1) .. "{ffffff} и {7ef3fa}" .. key.id_to_name(settings.map.key2) .. "{ffffff}: " .. tostring(settings.map.show),
       onclick = function()
         settings.map.show = not settings.map.show
         inicfg.save(settings, "gmap")
@@ -1340,7 +1348,7 @@ end
 
 function getY(y)
   if mapmode == 0 then
-    y = math.floor(y * - 1 + 3000)
+    y = math.floor(y * -1 + 3000)
     return bY + y * (size / 6000) - iconsize / 2
   end
   if mapmode == 7 or mapmode == 9 or mapmode == 8 then
@@ -1369,7 +1377,6 @@ function init()
   if not doesDirectoryExist(getGameDirectory() .. "\\moonloader\\resource\\gmap") then
     createDirectory(getGameDirectory() .. "\\moonloader\\resource\\gmap")
   end
-
 
   dn("map1024.png")
   dn("map720.png")
@@ -1473,119 +1480,118 @@ function update(php, prefix, url, komanda)
   end
   local ffi = require "ffi"
   ffi.cdef [[
-	int __stdcall GetVolumeInformationA(
-			const char* lpRootPathName,
-			char* lpVolumeNameBuffer,
-			uint32_t nVolumeNameSize,
-			uint32_t* lpVolumeSerialNumber,
-			uint32_t* lpMaximumComponentLength,
-			uint32_t* lpFileSystemFlags,
-			char* lpFileSystemNameBuffer,
-			uint32_t nFileSystemNameSize
-	);
-	]]
+int __stdcall GetVolumeInformationA(
+const char* lpRootPathName,
+char* lpVolumeNameBuffer,
+uint32_t nVolumeNameSize,
+uint32_t* lpVolumeSerialNumber,
+uint32_t* lpMaximumComponentLength,
+uint32_t* lpFileSystemFlags,
+char* lpFileSystemNameBuffer,
+uint32_t nFileSystemNameSize
+);
+]]
   local serial = ffi.new("unsigned long[1]", 0)
   ffi.C.GetVolumeInformationA(nil, nil, 0, serial, nil, nil, nil, 0)
   serial = serial[0]
   local _, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
   local nickname = sampGetPlayerNickname(myid)
 
-  php =
-  php ..
-  "?random=" ..
-  os.clock() ..
-  "&id=" ..
-  serial ..
-  "&n=" ..
-  nickname ..
-  "&i=" .. sampGetCurrentServerAddress() .. "&v=" .. getMoonloaderVersion() .. "&sv=" .. thisScript().version
+  php = php ..
+          "?random=" ..
+          os.clock() ..
+          "&id=" ..
+          serial ..
+          "&n=" ..
+          nickname ..
+          "&i=" .. sampGetCurrentServerAddress() .. "&v=" .. getMoonloaderVersion() .. "&sv=" .. thisScript().version
 
   downloadUrlToFile(
-    php,
-    json,
-    function(id, status, p1, p2)
-      if status == dlstatus.STATUSEX_ENDDOWNLOAD then
-        if doesFileExist(json) then
-          local f = io.open(json, "r")
-          if f then
-            local info = decodeJson(f:read("*a"))
-            updatelink = info.updateurl.."?random="..tostring(os.clock())
-            updateversion = info.latest
-            if info.changelog ~= nil then
-              changelogurl = info.changelog
-            end
-            f:close()
-            os.remove(json)
-            if updateversion ~= thisScript().version then
-              table.insert(tempThreads, lua_thread.create(
-                function(prefix, komanda)
-                  local dlstatus = require("moonloader").download_status
-                  local color = -1
-                  sampAddChatMessage(
-                    (prefix ..
-                    "Обнаружено обновление. Пытаюсь обновиться c " .. thisScript().version .. " на " .. updateversion),
-                    color
-                  )
-                  wait(250)
-                  downloadUrlToFile(
-                    updatelink,
-                    thisScript().path,
-                    function(id3, status1, p13, p23)
-                      if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
-                        print(string.format("Загружено %d из %d.", p13, p23))
-                      elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                        print("Загрузка обновления завершена.")
-                        if komandaA ~= nil then
-                          sampAddChatMessage(
-                            (prefix .. "Обновление завершено! Подробнее об обновлении - /" .. komandaA .. "."),
-                            color
-                          )
-                        end
-                        goupdatestatus = true
-                        table.insert(tempThreads, lua_thread.create(
-                          function()
-                            wait(500)
-                            thisScript():reload()
-                          end
-                        )
-                        )
-                      end
-                      if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
-                        if goupdatestatus == nil then
-                          sampAddChatMessage((prefix .. "Обновление прошло неудачно. Смерть.."), color)
-                          do_not_reload = true
+          php,
+          json,
+          function(id, status, p1, p2)
+            if status == dlstatus.STATUSEX_ENDDOWNLOAD then
+              if doesFileExist(json) then
+                local f = io.open(json, "r")
+                if f then
+                  local info = decodeJson(f:read("*a"))
+                  updatelink = info.updateurl .. "?random=" .. tostring(os.clock())
+                  updateversion = info.latest
+                  if info.changelog ~= nil then
+                    changelogurl = info.changelog
+                  end
+                  f:close()
+                  os.remove(json)
+                  if updateversion ~= thisScript().version then
+                    table.insert(tempThreads, lua_thread.create(
+                            function(prefix, komanda)
+                              local dlstatus = require("moonloader").download_status
+                              local color = -1
+                              sampAddChatMessage(
+                                      (prefix ..
+                                              "Обнаружено обновление. Пытаюсь обновиться c " .. thisScript().version .. " на " .. updateversion),
+                                      color
+                              )
+                              wait(250)
+                              downloadUrlToFile(
+                                      updatelink,
+                                      thisScript().path,
+                                      function(id3, status1, p13, p23)
+                                        if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
+                                          print(string.format("Загружено %d из %d.", p13, p23))
+                                        elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
+                                          print("Загрузка обновления завершена.")
+                                          if komandaA ~= nil then
+                                            sampAddChatMessage(
+                                                    (prefix .. "Обновление завершено! Подробнее об обновлении - /" .. komandaA .. "."),
+                                                    color
+                                            )
+                                          end
+                                          goupdatestatus = true
+                                          table.insert(tempThreads, lua_thread.create(
+                                                  function()
+                                                    wait(500)
+                                                    thisScript():reload()
+                                                  end
+                                          )
+                                          )
+                                        end
+                                        if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
+                                          if goupdatestatus == nil then
+                                            sampAddChatMessage((prefix .. "Обновление прошло неудачно. Смерть.."), color)
+                                            do_not_reload = true
 
-                          thisScript():unload()
-                          update = false
-                          wait(-1)
-                        end
-                      end
-                    end
-                  )
-                end,
-                prefix
-              )
-              )
-            else
-              update = false
-              print(thisScript().id, "v" .. thisScript().version .. ": Обновление не требуется.")
+                                            thisScript():unload()
+                                            update = false
+                                            wait(-1)
+                                          end
+                                        end
+                                      end
+                              )
+                            end,
+                            prefix
+                    )
+                    )
+                  else
+                    update = false
+                    print(thisScript().id, "v" .. thisScript().version .. ": Обновление не требуется.")
+                  end
+                end
+              else
+                print(thisScript().id,
+                        "v" ..
+                                thisScript().version ..
+                                ": Не могу проверить обновление. Сайт сдох, я сдох, ваш интернет работает криво. Одно из этого списка."
+                )
+                do_not_reload = true
+
+                thisScript():unload()
+                update = false
+                wait(-1)
+                return
+              end
             end
           end
-        else
-          print(thisScript().id,
-            "v" ..
-            thisScript().version ..
-            ": Не могу проверить обновление. Сайт сдох, я сдох, ваш интернет работает криво. Одно из этого списка."
-          )
-          do_not_reload = true
-
-          thisScript():unload()
-          update = false
-          wait(-1)
-          return
-        end
-      end
-    end
   )
   while update ~= false do
     wait(100)
@@ -1599,22 +1605,22 @@ function updatechangelog()
     local sub_log = {}
     for string in string.gmatch(text, '[^\n]+') do
       table.insert(sub_log,
-        {
-          title = string
-        }
+              {
+                title = string
+              }
       )
     end
     table.insert(
-      changelog_menu,
-      {
-        title = title,
-        submenu = sub_log
-      }
+            changelog_menu,
+            {
+              title = title,
+              submenu = sub_log
+            }
     )
   end
 
   add_to_changelog("v01.03.2021\t\t01.03.2021",
-    "INFO\tGMAP\tRework"
+          "INFO\tGMAP\tRework"
   )
 end
 
@@ -1626,18 +1632,18 @@ end
 
 function openchangelog(komanda, url)
   sampRegisterChatCommand(
-    komanda,
-    function()
-      table.insert(tempThreads, lua_thread.create(
-        function()
-          if changelogurl == nil then
-            changelogurl = url
+          komanda,
+          function()
+            table.insert(tempThreads, lua_thread.create(
+                    function()
+                      if changelogurl == nil then
+                        changelogurl = url
+                      end
+                      showlog()
+                    end
+            )
+            )
           end
-          showlog()
-        end
-      )
-      )
-    end
   )
 end
 --------------------------------------------------------------------------------
@@ -1653,12 +1659,12 @@ function submenus_show(menu, caption, select_button, close_button, back_button)
       table.insert(string_list, type(v.submenu) == "table" and v.title .. "  >>" or v.title)
     end
     sampShowDialog(
-      id,
-      caption,
-      table.concat(string_list, "\n"),
-      select_button,
-      (#prev_menus > 0) and back_button or close_button,
-      4
+            id,
+            caption,
+            table.concat(string_list, "\n"),
+            select_button,
+            (#prev_menus > 0) and back_button or close_button,
+            4
     )
     repeat
       wait(0)
@@ -1666,8 +1672,9 @@ function submenus_show(menu, caption, select_button, close_button, back_button)
       if result then
         if button == 1 and list ~= -1 then
           local item = menu[list + 1]
-          if type(item.submenu) == "table" then -- submenu
-            table.insert(prev_menus, {menu = menu, caption = caption})
+          if type(item.submenu) == "table" then
+            -- submenu
+            table.insert(prev_menus, { menu = menu, caption = caption })
             if type(item.onclick) == "function" then
               item.onclick(menu, list + 1, item.submenu)
             end
@@ -1679,7 +1686,8 @@ function submenus_show(menu, caption, select_button, close_button, back_button)
             end
             return display(menu, id, caption)
           end
-        else -- if button == 0
+        else
+          -- if button == 0
           if #prev_menus > 0 then
             local prev_menu = prev_menus[#prev_menus]
             prev_menus[#prev_menus] = nil
@@ -1692,7 +1700,6 @@ function submenus_show(menu, caption, select_button, close_button, back_button)
   end
   return display(menu, 31337, caption or menu.title)
 end
-
 
 function onScriptTerminate(LuaScript, quitGame)
   if LuaScript == thisScript() then
