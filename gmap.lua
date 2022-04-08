@@ -120,6 +120,7 @@ local settings = inicfg.load(
             render_pos = true,
             render_key = 0x5A,
             toggle_render = false,
+            send_interior = false,
             room = ""
           },
         },
@@ -319,7 +320,7 @@ function main()
       data["request"] = 0
       local query_start_s = os.clock()
 
-      if getActiveInterior() == 0 and sampGetPlayerScore(licenseid) >= 1 and not settings.map.hide then
+      if (settings.map.send_interior or getActiveInterior() == 0) and sampGetPlayerScore(licenseid) >= 1 and not settings.map.hide then
         local x, y, z = getCharCoordinates(playerPed)
         data["sender"] = {
           sender = licensenick,
@@ -1030,6 +1031,13 @@ function updateMenu()
           end
         }
       }
+    },
+    {
+      title = "Отправлять внутри интерьера: " .. tostring(settings.map.send_interior),
+      onclick = function()
+        settings.map.send_interior = not settings.map.send_interior
+        inicfg.save(settings, "gmap")
+      end
     },
     {
       title = " "
