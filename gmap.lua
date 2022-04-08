@@ -25,7 +25,7 @@ if getMoonloaderVersion() >= 27 then
     -- start polling task
     if not copas.running then
       copas.running = true
-      lua_thread.create(function()
+      table.insert(tempThreads, lua_thread.create(function()
         wait(0)
         while not copas.finished() do
           local ok, err = copas.step(0)
@@ -34,6 +34,7 @@ if getMoonloaderVersion() >= 27 then
         end
         copas.running = false
       end)
+      )
     end
     -- do request
     if handler then
@@ -123,6 +124,10 @@ local force_unload = false
 
 local x, y = 0, 0
 chat_active = true
+
+local threads = {}
+local tempThreads = {}
+
 function main()
   if not isSampfuncsLoaded() or not isSampLoaded() then
     return
@@ -148,11 +153,12 @@ function main()
   sampRegisterChatCommand(
     "gmap",
     function()
-      lua_thread.create(
+      table.insert(tempThreads, lua_thread.create(
         function()
           updateMenu()
           submenus_show(mod_submenus_sa, "{7ef3fa}GMAP {00ccff}v" .. thisScript().version, "Выбрать", "Закрыть", "Назад")
         end
+      )
       )
     end
   )
@@ -160,11 +166,12 @@ function main()
   sampRegisterChatCommand(
     "gmappp",
     function()
-      lua_thread.create(
+      table.insert(tempThreads, lua_thread.create(
         function()
           updateMenu()
           submenus_show(mod_submenus_sa, "{7ef3fa}GMAP {00ccff}v" .. thisScript().version, "Выбрать", "Закрыть", "Назад")
         end
+      )
       )
     end
   )
@@ -197,7 +204,7 @@ function main()
 
       sampRegisterChatCommand("moonupdate",
         function()
-          lua_thread.create(
+          table.insert(tempThreads, lua_thread.create(
             function()
               local string = "GMAP работает через регулярные запросы к серверу, которые на v"..getMoonloaderVersion().." реализовать сложно.\nВ v27 появилась возможность быстро скачивать нужные для нормальной работы с сетью библиотеки.\nПомимо этого, было пофикшено много других проблем, вроде вылета в момент скачивания муном файла.\n\nОбновление для муна ещё не вышло, есть только предварительная версия.\nСтоит её попробовать, но если будут проблемы, лучше откатиться.\n\nДля этого нужно сделать следующее:\n  1. Сделайте копию папки с игрой. На всякий случай. Никаких претензий.\n  2. Нажмите скачать (ентер).\n  3. В браузере должна открыться ссылка 'https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip'.\n  4. Выйдите из игры.\n  5. Распакуйте архив в папку с игрой с заменой.\n  6. При запуске игры одобрите edith скачивание библиотек для сети.\n  7. Наслаждайтесь стабильной работой скрипта.\n\nP.S. На v26 скрипт всё ещё будет работать, но все претензии будут игнорироваться."
               sampShowDialog(912, "Обновление до v.027.0-preview3", string, "Скачать", "Отмена", 0)
@@ -207,6 +214,7 @@ function main()
                 os.execute('explorer "https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip"')
               end
             end
+          )
           )
         end
       )
@@ -226,7 +234,7 @@ function main()
     end
 
   end
-  lua_thread.create(viewer)
+  table.insert(threads, lua_thread.create(viewer))
 
   sampRegisterChatCommand("groom",
     function(param)
@@ -498,6 +506,14 @@ function main()
         )
       end
     end
+  end
+  --cannot resume non-suspended coroutine walkaround
+  wait(-1)
+  for k, v in pairs(threads) do
+    print("threads", k, v:status())
+  end
+  for k, v in pairs(tempThreads) do
+    print("temp threads", k, v:status())
   end
 end
 
@@ -990,19 +1006,19 @@ function updateMenu()
         {
           title = "Открыть большую карту - {7ef3fa}" .. key.id_to_name(settings.map.key1),
           onclick = function()
-            lua_thread.create(changemaphotkey, 1)
+            table.insert(tempThreads, lua_thread.create(changemaphotkey, 1))
           end
         },
         {
           title = "Открыть 1/4 карты - {7ef3fa}" .. key.id_to_name(settings.map.key2),
           onclick = function()
-            lua_thread.create(changemaphotkey, 2)
+            table.insert(tempThreads, lua_thread.create(changemaphotkey, 2))
           end
         },
         {
           title = "Сменить режим 1/4 карты- {7ef3fa}" .. key.id_to_name(settings.map.key3),
           onclick = function()
-            lua_thread.create(changemaphotkey, 3)
+            table.insert(tempThreads, lua_thread.create(changemaphotkey, 3))
           end
         }
       }
@@ -1217,7 +1233,7 @@ function updateMenu()
     {
       title = "Клавиша рендера - {7ef3fa}" .. key.id_to_name(settings.map.render_key),
       onclick = function()
-        lua_thread.create(changemaphotkey, 4)
+        table.insert(tempThreads, lua_thread.create(changemaphotkey, 4))
       end
     },
     {
@@ -1501,7 +1517,7 @@ function update(php, prefix, url, komanda)
             f:close()
             os.remove(json)
             if updateversion ~= thisScript().version then
-              lua_thread.create(
+              table.insert(tempThreads, lua_thread.create(
                 function(prefix, komanda)
                   local dlstatus = require("moonloader").download_status
                   local color = -1
@@ -1526,11 +1542,12 @@ function update(php, prefix, url, komanda)
                           )
                         end
                         goupdatestatus = true
-                        lua_thread.create(
+                        table.insert(tempThreads, lua_thread.create(
                           function()
                             wait(500)
                             thisScript():reload()
                           end
+                        )
                         )
                       end
                       if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
@@ -1547,6 +1564,7 @@ function update(php, prefix, url, komanda)
                   )
                 end,
                 prefix
+              )
               )
             else
               update = false
@@ -1610,13 +1628,14 @@ function openchangelog(komanda, url)
   sampRegisterChatCommand(
     komanda,
     function()
-      lua_thread.create(
+      table.insert(tempThreads, lua_thread.create(
         function()
           if changelogurl == nil then
             changelogurl = url
           end
           showlog()
         end
+      )
       )
     end
   )
