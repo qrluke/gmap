@@ -479,6 +479,16 @@ function main()
               transponder_delay = ad["delay"]
               active_users = ad["active"]
 
+              if chat_active then
+                sampAddChatMessage(
+                        "GMAP {ffffff}>>>{7ef3fa} Игроков в комнате: {00ccff}" ..
+                                active_users ..
+                                "{7ef3fa} {ffffff}>>>{7ef3fa} Сменить комнату: {00ccff}/groom{7ef3fa}.",
+                        0x7ef3fa
+                )
+                chat_active = false
+              end
+
               wait_for_response = false
             end
             f:close()
