@@ -164,6 +164,7 @@ function main()
           function()
             table.insert(tempThreads, lua_thread.create(
                     function()
+                      sampSendChat("/gmap")
                       updateMenu()
                       submenus_show(mod_submenus_sa, "{7ef3fa}GMAP {00ccff}v" .. thisScript().version, "Выбрать", "Закрыть", "Назад")
                     end
