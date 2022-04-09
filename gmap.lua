@@ -199,37 +199,37 @@ function main()
   if settings.welcome.show then
     asodkas, licenseid = sampGetPlayerIdByCharHandle(PLAYER_PED)
     licensenick = sampGetPlayerNickname(licenseid)
-    if getMoonloaderVersion() <= 26 then
-      sampAddChatMessage(
-              "{7ef3fa}>>> {ff0000}Внимание! У вас стоит moonloader v" ..
-                      getMoonloaderVersion() ..
-                      ", на котором GMAP может работать нестабильно.",
-              0xff0000
-      )
-      sampAddChatMessage(
-              "{7ef3fa}>>> {ff0000}Введите {00ccff}/moonupdate{ff0000}, чтобы узнать как и зачем обновиться до тестовой версии муна.",
-              0xff0000
-      )
-
-      sampRegisterChatCommand("moonupdate",
-              function()
-                table.insert(tempThreads, lua_thread.create(
-                        function()
-                          local string = "GMAP работает через регулярные запросы к серверу, которые на v" .. getMoonloaderVersion() .. " реализовать сложно.\nВ v27 появилась возможность быстро скачивать нужные для нормальной работы с сетью библиотеки.\nПомимо этого, было пофикшено много других проблем, вроде вылета в момент скачивания муном файла.\n\nОбновление для муна ещё не вышло, есть только предварительная версия.\nСтоит её попробовать, но если будут проблемы, лучше откатиться.\n\nДля этого нужно сделать следующее:\n  1. Сделайте копию папки с игрой. На всякий случай. Никаких претензий.\n  2. Нажмите скачать (ентер).\n  3. В браузере должна открыться ссылка 'https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip'.\n  4. Выйдите из игры.\n  5. Распакуйте архив в папку с игрой с заменой.\n  6. При запуске игры одобрите edith скачивание библиотек для сети.\n  7. Наслаждайтесь стабильной работой скрипта.\n\nP.S. На v26 скрипт всё ещё будет работать, но все претензии будут игнорироваться."
-                          sampShowDialog(912, "Обновление до v.027.0-preview3", string, "Скачать", "Отмена", 0)
-                          while sampIsDialogActive() do
-                            wait(100)
-                          end
-                          local result, button, list, input = sampHasDialogRespond(912)
-                          if button == 1 then
-                            os.execute('explorer "https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip"')
-                          end
-                        end
-                )
-                )
-              end
-      )
-    end
+    --if getMoonloaderVersion() <= 26 then
+    --  sampAddChatMessage(
+    --          "{7ef3fa}>>> {ff0000}Внимание! У вас стоит moonloader v" ..
+    --                  getMoonloaderVersion() ..
+    --                  ", на котором GMAP может работать нестабильно.",
+    --          0xff0000
+    --  )
+    --  sampAddChatMessage(
+    --          "{7ef3fa}>>> {ff0000}Введите {00ccff}/moonupdate{ff0000}, чтобы узнать как и зачем обновиться до тестовой версии муна.",
+    --          0xff0000
+    --  )
+    --
+    --  sampRegisterChatCommand("moonupdate",
+    --          function()
+    --            table.insert(tempThreads, lua_thread.create(
+    --                    function()
+    --                      local string = "GMAP работает через регулярные запросы к серверу, которые на v" .. getMoonloaderVersion() .. " реализовать сложно.\nВ v27 появилась возможность быстро скачивать нужные для нормальной работы с сетью библиотеки.\nПомимо этого, было пофикшено много других проблем, вроде вылета в момент скачивания муном файла.\n\nОбновление для муна ещё не вышло, есть только предварительная версия.\nСтоит её попробовать, но если будут проблемы, лучше откатиться.\n\nДля этого нужно сделать следующее:\n  1. Сделайте копию папки с игрой. На всякий случай. Никаких претензий.\n  2. Нажмите скачать (ентер).\n  3. В браузере должна открыться ссылка 'https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip'.\n  4. Выйдите из игры.\n  5. Распакуйте архив в папку с игрой с заменой.\n  6. При запуске игры одобрите edith скачивание библиотек для сети.\n  7. Наслаждайтесь стабильной работой скрипта.\n\nP.S. На v26 скрипт всё ещё будет работать, но все претензии будут игнорироваться."
+    --                      sampShowDialog(912, "Обновление до v.027.0-preview3", string, "Скачать", "Отмена", 0)
+    --                      while sampIsDialogActive() do
+    --                        wait(100)
+    --                      end
+    --                      local result, button, list, input = sampHasDialogRespond(912)
+    --                      if button == 1 then
+    --                        os.execute('explorer "https://blast.hk/moonloader/files/moonloader-027.0-preview3.zip"')
+    --                      end
+    --                    end
+    --            )
+    --            )
+    --          end
+    --  )
+    --end
 
     sampAddChatMessage(
             "GMAP {00ccff}v" ..
