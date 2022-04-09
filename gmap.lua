@@ -2,7 +2,7 @@ require 'lib.moonloader'
 
 script_name("gmap")
 script_author("qrlk")
-script_version("28.03.2021")
+script_version("10.04.2022")
 script_url("https://github.com/qrlk/gmap")
 script_description("Обмен координатами через сервер.")
 
@@ -1695,8 +1695,16 @@ function updatechangelog()
     )
   end
 
-  add_to_changelog("v01.03.2021\t\t01.03.2021",
-          "INFO\tGMAP\tRework"
+  add_to_changelog("v10.04.2022",
+          "Добавлена возможность включить отправку координат в интерьере (в меню скрипта, в настройках)\n"..
+          "Обход ошибки 'cannot resume non-suspended coroutine'\n"..
+          "Убрано пожелание поставить тестовую версию\n"..
+          "Переработано меню скрипта (/gmap): добавлен раздел с комнатой, при переключении настроек не придется перезаходить\n"..
+          "При активации меню через /gmap команда так же отправляется в чат сервера (для срп)\n"
+  )
+
+  add_to_changelog("v01.03.2021",
+          "Произошел реворк старого GMAP"
   )
 end
 
