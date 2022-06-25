@@ -2,7 +2,7 @@ require 'lib.moonloader'
 
 script_name("gmap")
 script_author("qrlk")
-script_version("10.04.2022")
+script_version("25.06.2022")
 script_url("https://github.com/qrlk/gmap")
 script_description("Обмен координатами через сервер.")
 
