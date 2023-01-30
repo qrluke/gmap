@@ -1,5 +1,5 @@
 {
-  "latest": "25.06.2022",
+  "latest": "25.06.2022-1",
   "updateurl": "https://raw.githubusercontent.com/qrlk/gmap/master/gmap.lua",
   "changelog": "https://github.com/qrlk/gmap/releases",
   "telemetry": "http://qrlk.me/dev/moonloader/gmap/stats.php"

@@ -2,13 +2,13 @@ require 'lib.moonloader'
 
 script_name("gmap")
 script_author("qrlk")
-script_version("25.06.2022")
+script_version("25.06.2022-1")
 script_url("https://github.com/qrlk/gmap")
 script_description("Обмен координатами через сервер.")
 
 --[[ИЗМЕНИТЬ]]
 local ip = 'http://gmap.qrlk.me:40001/' -- ЗДЕСЬ СЕРВЕР server.py
-local json_update_link = "http://qrlk.me/dev/moonloader/gmap/stats.php" --автообновление, должен возвращать json
+local json_update_link = "https://raw.githubusercontent.com/qrlk/gmap/master/version.json" --автообновление, должен возвращать json
 --[[ИЗМЕНИТЬ]]
 
 -- https://github.com/qrlk/qrlk.lua.moonloader
